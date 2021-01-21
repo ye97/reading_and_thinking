@@ -5,6 +5,9 @@ tags:
  - 点云
  - 深度
  - 开发
+categories: 
+  - hexo 
+  - 开发
 
 ---
 
