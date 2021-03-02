@@ -73,6 +73,10 @@ x=[[0,1,2],	y=[[0,0,0],
 
 ​	[0,1,2]] 		 [1,1,1]]
 
+{% asset_img 反向传播理解.png 反向传播 %}
+
+{%asset_img 反向传播理解.png 图片描述%}
+
 横坐标矩阵X中的每个元素，与纵坐标矩阵Y 中对应位置元素，共同构成一个点的完整坐标。如B点坐标( X12 , Y12) = (1,1) 
 
 ~~~python
@@ -168,6 +172,105 @@ for epoch in range(100):
  
 print("predict (after training)", 4, forward(4).item())
 ~~~
+
+### 5.1.2 pytorch实现简单y=wx求取权重，第二部分为wx+b
+
+~~~python
+import torch
+def forward(x,w):
+    return w*x
+#前向传播目标是损失函数
+def loss(y,x):
+    y_pre=forward(x,w)
+    return (y-y_pre)**2
+
+#前两个函数应该理解为计算图的构建，因此手动画个图然后来实现计算图，明确那几个参数是需要计算求取的
+
+x_data=[1,2,3,4,5]
+y_data=[2,1000,6,8,10]
+#构造计算图中量都应该是tensor量
+w=torch.Tensor([1])
+w.requires_grad=True
+#迭代1000词
+for epoch in range(1,1000):
+    #随机梯度下降，按顺序选取x和y
+    for x,y in zip(x_data,y_data):
+        l=loss(y,x)
+        l.backward()
+        #0.01表示学习率，如果学习率设置过容易发散
+        #输出nan，表示not a number 就是表示无穷大不是数
+        #inf表示无穷大
+        #更新权重
+        w.data=w.data-0.01*w.grad.data
+        #消除权重的值
+        w.grad.data.zero_()
+print(w.item())
+
+
+import  torch
+def forward(w,b,x):
+    return w*x+b
+def loss(w,b,x,y):
+    y_pre=forward(w,b,x)
+    return (y-y_pre)**2
+
+from random import random
+X=[]
+Y=[]
+w=torch.Tensor([1])
+w.requires_grad=True
+
+b=torch.Tensor([1])
+b.requires_grad=True
+for i in range(10):
+    X.append(random()*10+1)
+    Y.append(X[i] * 2 + 0.5)
+
+for epoch in range(10000):
+    for x, y in zip(X, Y):
+        l=loss(w,b,x,y)
+        l.backward()
+        w.data=w.data-0.001*w.grad.data
+        b.data=b.data-0.001*b.grad.data
+        w.grad.data.zero_()
+        b.grad.data.zero_()
+
+print(w.item())
+print(b.item())
+
+~~~
+
+### 5.1.3 pytorch实现复杂网络基本结构
+
+#### 		1.  prepare dataset
+
+##### 					1,明确样本维度和标签维度
+
+##### 					2，要求取量的维度设置（w和b为例）
+
+##### 					3，样本矩阵应该写成 个数*特征
+
+##### 					4，要求导的参数应该反推得到
+
+#### 		2. design model （inhert from module）
+
+##### 					1，唯一目标就是求到输出值
+
+#### 		3.construct loss and opitimize
+
+##### 					1，计算loss是为了进行反向传播，
+
+##### 					2，optimizer是为了更新梯度
+
+#### 		4.train cycle
+
+##### 					1.forwad
+
+##### 					2.backward
+
+##### 					3.update
+
+
 
 
 
