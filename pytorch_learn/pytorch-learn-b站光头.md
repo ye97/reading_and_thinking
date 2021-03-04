@@ -173,7 +173,7 @@ for epoch in range(100):
 print("predict (after training)", 4, forward(4).item())
 ~~~
 
-### 5.1.2 pytorch实现简单y=wx求取权重，第二部分为wx+b
+## 5.2 pytorch实现简单y=wx求取权重，第二部分为wx+b
 
 ~~~python
 import torch
@@ -240,37 +240,136 @@ print(b.item())
 
 ~~~
 
-### 5.1.3 pytorch实现复杂网络基本结构
+## 5.3 pytorch实现复杂网络基本结构
 
 #### 		1.  prepare dataset
 
-##### 					1,明确样本维度和标签维度
+##### 						1,明确样本维度和标签维度
 
-##### 					2，要求取量的维度设置（w和b为例）
+##### 						2，要求取量的维度设置（w和b为例）
 
-##### 					3，样本矩阵应该写成 个数*特征
+##### 						3，样本矩阵应该写成 个数*特征
 
-##### 					4，要求导的参数应该反推得到
+##### 						4，要求导的参数应该反推得到
 
 #### 		2. design model （inhert from module）
 
-##### 					1，唯一目标就是求到输出值
+##### 						1，唯一目标就是求到输出值
 
 #### 		3.construct loss and opitimize
 
-##### 					1，计算loss是为了进行反向传播，
+##### 						1，计算loss是为了进行反向传播，
 
-##### 					2，optimizer是为了更新梯度
+##### 						2，optimizer是为了更新梯度
 
 #### 		4.train cycle
 
-##### 					1.forwad
+##### 						1.forwad
 
-##### 					2.backward
+##### 						2.backward
 
-##### 					3.update
+##### 						3.update
+
+## 5.4调用pytorch实现线性回归
+
+### 		5.4.1 model构造
+
+#### 		1，继承module 
+
+#### 		2，必须实现init函数，调用父类的初始化函数 __init__ 函数（super语句），返回自己的构造类 torch.nn.Linear(1, 1)，这个构造类都是callable，linear是call函数 ，可以直接被调用
+
+#### 		3，必须实现自己的forward计算图
+
+~~~python 
+class LinearModel(torch.nn.Module):
+    #nn表示neturnal network 
+    #module 表示网络的包
+    def __init__(self):
+        #调用父辈的类函数的init函数  super（类，类实例）.父类方法（）
+        super(LinearModel, self).__init__()
+        # (1,1)是指输入x和输出y的特征维度，这里数据集中的x和y的特征都是1维的
+        
+        # 该线性层需要学习的参数是w和b  获取w/b的方式分别是~linear.weight/linear.bias
+        #torch.nn.Linear(1, 1) 构造一个对象返回给实例
+        self.linear = torch.nn.Linear(1, 1)
+
+    def forward(self, x):
+        #实现foreward函数
+        #此处linear就是一个callalbe对象，实现了__call__函数
+        y_pred = self.linear(x)
+        return y_pred
+~~~
+
+### 5.4.2 构造损失函数和优化函数
+
+~~~python
+# construct loss and optimizer
+
+# criterion = torch.nn.MSELoss(size_average = False)
+
+#损失函数还是在网络nn模块中
+criterion = torch.nn.MSELoss(reduction='sum')
+#sgd梯度下降，在optim优化器中，（模型参数求取就是在优化器中）
+#model.parameters（）自动识别所有参数
+optimizer = torch.optim.SGD(model.parameters(), lr=0.01)  # model.parameters()自动完成参数的初始化操作
+~~~
+
+### 5.4.3模型求取
+
+#### 1，模型调用求取得到y_pre
+
+#### 2,   求取loss值
+
+#### 3.1 反向传播前清零梯度
+
+#### 3， 反向传播
+
+#### 3.1.2反向传播后更新参数
+
+~~~ python
+#完整代码
+import torch
+#model实现自己的类，继承module模块
+class Model(torch.nn.Module):
+    #继承他的原因是初始化的调用函数要使用他
+    def __init__(self):
+        #调用父辈的同名方法都是这样的调用 super（本类名，self）.方法
+        # python中的super( test, self).init()
+        # 首先找到test的父类（比如是类A），然后把类test的对象self转换为类A的对象，然后“被转换”的类A对象调用自己的__init__函数.
+        super(Model,self).__init__()
+        #实例中添加linear函数，使用torch中linear函数，返回得到一个linear对象
+        self.linear=torch.nn.Linear(1,1)
+    def forward(self,x):
+        #实现正向传播图 调用实例对象的linear对象，即上面初始化的对象
+        return self.linear(x)
 
 
+model=Model()
+
+#此处loss和optim都是可调用对象，即无参构造，传入参数调用
+loss=torch.nn.MSELoss(reduction="sum")
+
+optim=torch.optim.SGD(model.parameters(),lr=0.01)
+
+#准备数据
+x_data = torch.Tensor([[1.0], [2.0], [3.0]])
+y_data = torch.Tensor([[2.0], [4.0], [6.0]])
+
+for epoch in range(1,1000):
+    #model是一个实例，但是他是__call__，可以调用，像函数一样可以调用的实例
+    y=model(x_data)
+    #loss同理，调用就是调用类中的函数
+    cost=loss(y,y_data)
+    print(epoch,":",cost.data.item(),cost.data.item())
+    #反向传播前先清理梯度
+    optim.zero_grad()
+    #反向传播
+    cost.backward()
+    #更新参数（更新参数和清理梯度，都是优化器的工作）
+    optim.step()
+print(model.linear.weight.item())
+print(model.linear.bias.item())
+~~~
 
 
 
