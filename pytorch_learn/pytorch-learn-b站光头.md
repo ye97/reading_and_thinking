@@ -371,5 +371,43 @@ print(model.linear.weight.item())
 print(model.linear.bias.item())
 ~~~
 
+# 6，数据集处理
 
+1，概念 epoch：一次所有数据集被处理，包括前向和反向
+
+2，batch_size；一次被处理的样本数量
+
+3，iteration ：迭代次数，总样本除以batch_size
+
+## 6.1 dataset类重写
+
+​			dataset类是pytorch里面的抽象类提供给我们构造自己的数据集
+
+
+
+​			目标：实现数据的结构（索引）
+
+### 			1.1____init____实现
+
+### 			1.2 getitem
+
+### 			1.3 len函数
+
+
+
+## 6.2 dataloader类，pytorch已经提供了
+
+​				DataLoader对数据集先打乱(shuffle)，然后划分成mini_batch。
+
+### 			1.1 dataset名
+
+### 			1.2 datasize
+
+### 			1.3 shuffle
+
+### 			1.4 num works（线程数）
+
+
+
+###  
 
