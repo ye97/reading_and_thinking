@@ -348,8 +348,11 @@ model=Model()
 
 #此处loss和optim都是可调用对象，即无参构造，传入参数调用
 loss=torch.nn.MSELoss(reduction="sum")
-
+#传入model的参数他知道推导计算图
 optim=torch.optim.SGD(model.parameters(),lr=0.01)
+#参数的输出还是使用model
+#model对象中有linear对象，linear对象中有w和b
+
 
 #准备数据
 x_data = torch.Tensor([[1.0], [2.0], [3.0]])
@@ -367,6 +370,8 @@ for epoch in range(1,1000):
     cost.backward()
     #更新参数（更新参数和清理梯度，都是优化器的工作）
     optim.step()
+
+
 print(model.linear.weight.item())
 print(model.linear.bias.item())
 ~~~
