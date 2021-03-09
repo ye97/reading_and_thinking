@@ -418,6 +418,36 @@ transform = transforms.Compose
 
 
 
+## 6.3 维度变换
+
+a.view()和.reshape() 丢失维度信息，直接变换维所输入的维度
+
+squeeze(4)插入的维度就在4的位置，就是多添加一个维度
+
+
+
+## 6.4 过拟合
+
+添加正则化项
+
+添加冲量（考虑历史梯度）
+
+learing rate衰减
+
+early stop 使用测试集的准确率，最高值
+
+drop out 退出部分网络，nn.drop(0.5)退出百分之50
+
+
+
+
+
+
+
+
+
+
+
 
 
 # 7，多分类
@@ -530,4 +560,49 @@ if __name__ == '__main__':
 ```
 
 # 8，CNN
+
+## 1.1 卷积
+
+![cnn](D:\git_rep\hexo\source\_posts\pytorch_learn\cnn.png)
+
+## 1.2 卷积尺寸
+
+![卷积维度](D:\git_rep\hexo\source\_posts\pytorch_learn\卷积维度.png)
+
+输入 n表示channnel数，则输入是 （n，widthin，heightin）
+
+
+
+卷积核：m个，每个都对输入卷积，每个尺寸为 （n，width_kernal，heightin_kernal）(每一个通道都要配一个核)
+
+输出：(m,widthin-width_kernel+1,heightin-height_kernel+1) 
+
+## 1.3 二维卷积构造
+
+conv2d 2维卷积网络
+
+class torch.nn.Conv2d(in_channels, out_channels, kernel_size, stride=1, padding=0, dilation=1, groups=1, bias=True)
+
+各个参数值：
+stride：步长，卷积块的滑动步长
+
+zero-padding:图像四周填0
+
+groups:分组卷积
+
+Convolution 层的参数中有一个group参数，其意思是将对应的输入通道与输出通道数进行分组, 默认值为1, 也就是说默认输出输入的所有通道各为一组。 比如输入数据大小为90x100x100x32，通道数32，要经过一个3x3x48的卷积，group默认是1，就是全连接的卷积层。
+
+如果group是2，那么对应要将输入的32个通道分成2个16的通道，将输出的48个通道分成2个24的通道。对输出的2个24的通道，第一个24通道与输入的第一个16通道进行全卷积，第二个24通道与输入的第二个16通道进行全卷积。
+
+极端情况下，输入输出通道数相同，比如为24，group大小也为24，那么每个输出卷积核，只与输入的对应的通道进行卷积。
+
+bias:卷积后是否加偏移量
+
+dilation:控制 kernel 点之间的空间距离
+
+![conv2d_dilation](D:\git_rep\hexo\source\_posts\pytorch_learn\conv2d_dilation.png)
+
+![conv2d_dilation2](D:\git_rep\hexo\source\_posts\pytorch_learn\conv2d_dilation2.png)
+
+看下面灰色
 
