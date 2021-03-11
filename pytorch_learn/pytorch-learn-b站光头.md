@@ -438,7 +438,21 @@ early stop 使用测试集的准确率，最高值
 
 drop out 退出部分网络，nn.drop(0.5)退出百分之50
 
+## 6.5数据值处理
 
+torch.clamp(input ,min,max,out=None)](clamp表示夹的意思)
+
+torch.clamp()的作用把input的数据，夹逼到[min,max]之间
+
+input:输入数据
+
+min:最小数据
+
+max:最大数据
+
+如果input中的数据小于min,用min代替input中小于min的数据，
+
+如果input中的数据大于max,用max代替input中大于max的数据
 
 
 
@@ -606,3 +620,50 @@ dilation:控制 kernel 点之间的空间距离
 
 看下面灰色
 
+# 9，pytorch模块函数
+
+## 	9.1 nn module；(torch.nn)
+
+### 		9.1.1 初始化参数：(torch.nn.init)
+
+#### 				1，卷积层
+
+##### 					**高斯初始化**
+
+​					从均值为0，方差为1的高斯分布中采样，作为初始权值。torch.nn.init.normal_(tensor, mean=0, std=1)
+
+##### 					**kaiming高斯初始化**
+
+​					使得每一卷积层的输出的方差都为1。
+
+​					torch.nn.init.kaiming_normal_(tensor, a=0, mode='fan_in', nonlinearity='leaky_relu')
+
+##### 					**xavier高斯初始化**
+
+​					输入输出的方差不变
+
+​					基于线性函数推导的，同时在tanh激活函数上有很好的效果，**但不适用于ReLU激活函数**。
+
+#### 				2，BatchNorm层
+
+#### 				3，全连接层
+
+##### 					常数初始化
+
+​						torch.nn.init.constant_(*tensor*, *val*)
+
+##### 					正交初始化
+
+​						torch.nn.init.orthogonal_(*tensor*, *gain=1*)
+
+​					
+
+
+
+​					
+
+### 			
+
+
+
+​	
