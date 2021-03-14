@@ -104,3 +104,65 @@ $P_{\xi}$表示配准子集
 
 $$ c_{k}(a)=\underset{b \in\left\{1,2, . ., N_{q}\right\}}{\arg \min }\left\|\mathbf{R}_{k-1} \vec{p}_{a}+\vec{t}_{k-1}-\vec{q}_{b}\right\|_{2} $$
 
+# the end：代码学习总结
+
+## 1，数据读取问题
+
+### 	1.1先通过matlab查看数据结构
+
+![维度](D:\git_rep\hexo\source\_posts\传统paper\维度.png)
+
+### 1.2在python中加载数据
+
+~~~python
+from scipy import io as sio
+ dataset = sio.loadmat(path)
+#dataset是字典形式
+#上图是他的键
+#读取键，debug查看具体的结构
+model = dataset.get('model')
+
+
+~~~
+
+### 1.3寻找最近点对（注意scilearn 官方文档使用）
+
+~~~python
+#sklearn包调用
+from sklearn.neighbors import NearestNeighbors
+#构造最近搜索类
+searcher = NearestNeighbors(n_neighbors=1, algorithm='kd_tree')
+#训练类（train medel）
+searcher.fit(modelI[:3, :].T)
+#返回数组
+rs = searcher.kneighbors(TData[:3, :].T)
+#
+~~~
+
+~~~python
+samples = [[0., 0., 0.], [0., .5, 0.], [1., 1., .5]]
+>>> from sklearn.neighbors import NearestNeighbors
+>>> neigh = NearestNeighbors(n_neighbors=1)
+>>> neigh.fit(samples)
+NearestNeighbors(n_neighbors=1)
+>>> print(neigh.kneighbors([[1., 1., 1.]]))
+#第一个数据表示对应点的distance 第二数组表示index
+(array([[0.5]]), array([[2]]))
+~~~
+
+
+
+### the end 常见命名总结
+
+grt=ground truth 
+
+iterNum 
+
+scan 帧（一般是处理后的点云（兔子模型10帧）），scan下面添加1111，方便和p相乘
+
+shape 原点云，就是模型的形状
+
+p 变换矩阵，4 乘4，下面是0001，上面是RT
+
+
+

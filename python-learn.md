@@ -74,7 +74,7 @@ for em in company:
 [(1, 'Spring'), (2, 'Summer'), (3, 'Fall'), (4, 'Winter')]
 ~~~
 
-## numpy库
+# numpy库
 
 ## 1，cumsum
 
@@ -113,6 +113,24 @@ print(arr.cumsum(2))
 #0去第一个轴，按轴累加
 #其他同理
 ~~~
+
+## 2，np.concatenate
+
+~~~python
+a=np.array([[1,2,3],[4,5,6]])
+b=np.array([[11,21,31],[7,8,9]])
+print(np.concatenate((a,b),axis=1))
+#[[ 1  2  3 11 21 31]
+#[ 4  5  6  7  8  9]]
+~~~
+
+## 3，np.zeros
+
+## 4， np.sort
+
+## 5，**numpy.arange([start, ]stop, [step, ]dtype=None)**
+
+在给定的时间间隔内返回均匀间隔的值。
 
 
 
