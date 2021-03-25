@@ -376,5 +376,299 @@ print(model.linear.weight.item())
 print(model.linear.bias.item())
 ~~~
 
+# 6，数据集处理
+
+1，概念 epoch：一次所有数据集被处理，包括前向和反向
+
+2，batch_size；一次被处理的样本数量
+
+3，iteration ：迭代次数，总样本除以batch_size
+
+## 6.1 dataset类重写
+
+​			dataset类是pytorch里面的抽象类提供给我们构造自己的数据集
 
 
+
+​		**目标：实现数据的结构（正则化之类的），索引（len和getitem）**
+
+​		transform=transforms.compose(compose就是将所需的transforms的各种变换有序地组合在一起。)
+
+```
+transform = transforms.Compose
+(	[transforms.ToTensor(), 
+	transforms.Normalize((0.1307,), (0.3081,))
+	])  # 归一化,均值和方差
+```
+
+### 			1.1____init____实现
+
+### 			1.2 getitem
+
+### 			1.3 len函数
+
+
+
+## 6.2 dataloader类，pytorch已经提供了
+
+​				DataLoader对数据集先打乱(shuffle)，然后划分成mini_batch。
+
+### 			1.1 dataset名
+
+### 			1.2 datasize
+
+### 			1.3 shuffle
+
+### 			1.4 num works（线程数）
+
+
+
+## 6.3 维度变换
+
+a.view()和.reshape() 丢失维度信息，直接变换维所输入的维度
+
+squeeze(4)插入的维度就在4的位置，就是多添加一个维度
+
+
+
+## 6.4 过拟合
+
+添加正则化项
+
+添加冲量（考虑历史梯度）
+
+learing rate衰减
+
+early stop 使用测试集的准确率，最高值
+
+drop out 退出部分网络，nn.drop(0.5)退出百分之50
+
+## 6.5数据值处理
+
+torch.clamp(input ,min,max,out=None)](clamp表示夹的意思)
+
+torch.clamp()的作用把input的数据，夹逼到[min,max]之间
+
+input:输入数据
+
+min:最小数据
+
+max:最大数据
+
+如果input中的数据小于min,用min代替input中小于min的数据，
+
+如果input中的数据大于max,用max代替input中大于max的数据
+
+
+
+
+
+
+
+
+
+
+
+# 7，多分类
+
+![sofrmax](D:\git_rep\hexo\source\_posts\pytorch_learn\sofrmax.png)
+
+每个指标进行指数缩放然后除以全体和。
+
+NLLLoss函数=log+onehot
+
+![NLLLoss](D:\git_rep\hexo\source\_posts\pytorch_learn\NLLLoss.png)
+
+crossemptoryloss函数
+
+![CrossEntropyLoss](D:\git_rep\hexo\source\_posts\pytorch_learn\CrossEntropyLoss.png)
+
+```python
+import torch
+from torchvision import transforms
+from torchvision import datasets
+from torch.utils.data import DataLoader
+import torch.nn.functional as F
+import torch.optim as optim
+
+# prepare dataset
+
+batch_size = 64
+#transforms。compose（）就是一系列的操作组合
+transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))])  # 归一化,均值和方差
+#这个代码不能运行，但是dataset 操作可以参见官方帮助文档 #https://pytorch.org/docs/stable/nn.html#crossentropyloss
+
+#root参数表示下载存放位置，train参数表示train训练集中提取，download表示下载
+#dataset只是处理数据的结构
+#dataloader：shuffle and  batchsize
+train_dataset = datasets.MNIST(root='../dataset/mnist/', train=True, download=True, transform=transform)
+train_loader = DataLoader(train_dataset, shuffle=True, batch_size=batch_size)
+test_dataset = datasets.MNIST(root='../dataset/mnist/', train=False, download=True, transform=transform)
+test_loader = DataLoader(test_dataset, shuffle=False, batch_size=batch_size)
+
+
+# design model using class
+
+
+class Net(torch.nn.Module):
+    def __init__(self):
+        super(Net, self).__init__()
+        self.l1 = torch.nn.Linear(784, 512)
+        self.l2 = torch.nn.Linear(512, 256)
+        self.l3 = torch.nn.Linear(256, 128)
+        self.l4 = torch.nn.Linear(128, 64)
+        self.l5 = torch.nn.Linear(64, 10)
+
+    def forward(self, x):
+        x = x.view(-1, 784)  # -1其实就是自动获取mini_batch
+        x = F.relu(self.l1(x))
+        x = F.relu(self.l2(x))
+        x = F.relu(self.l3(x))
+        x = F.relu(self.l4(x))
+        return self.l5(x)  # 最后一层不做激活，不进行非线性变换
+
+
+model = Net()
+
+# construct loss and optimizer
+criterion = torch.nn.CrossEntropyLoss()
+optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.5)
+
+
+# training cycle forward, backward, update
+
+
+def train(epoch):
+    running_loss = 0.0
+    #train_loader 按照batch_size划分批次，成为可迭代对象
+    for batch_idx, data in enumerate(train_loader, 0):
+        
+        # 获得一个批次的数据和标签
+        inputs, target = data
+        optimizer.zero_grad()
+        # 获得模型预测结果(64, 10)
+        outputs = model(inputs)
+        # 交叉熵代价函数outputs(64,10),target（64）
+        loss = criterion(outputs, target)
+        loss.backward()
+        optimizer.step()
+
+        running_loss += loss.item()
+        if batch_idx % 300 == 299:
+            print('[%d, %5d] loss: %.3f' % (epoch + 1, batch_idx + 1, running_loss / 300))
+            running_loss = 0.0
+
+
+def test():
+    correct = 0
+    total = 0
+    with torch.no_grad():
+        for data in test_loader:
+            images, labels = data
+            outputs = model(images)
+            _, predicted = torch.max(outputs.data, dim=1)  # dim = 1 列是第0个维度，行是第1个维度
+            total += labels.size(0)
+            correct += (predicted == labels).sum().item()  # 张量之间的比较运算
+    print('accuracy on test set: %d %% ' % (100 * correct / total))
+
+
+if __name__ == '__main__':
+    for epoch in range(10):
+        train(epoch)
+        test()
+```
+
+# 8，CNN
+
+## 1.1 卷积
+
+![cnn](D:\git_rep\hexo\source\_posts\pytorch_learn\cnn.png)
+
+## 1.2 卷积尺寸
+
+![卷积维度](D:\git_rep\hexo\source\_posts\pytorch_learn\卷积维度.png)
+
+输入 n表示channnel数，则输入是 （n，widthin，heightin）
+
+
+
+卷积核：m个，每个都对输入卷积，每个尺寸为 （n，width_kernal，heightin_kernal）(每一个通道都要配一个核)
+
+输出：(m,widthin-width_kernel+1,heightin-height_kernel+1) 
+
+## 1.3 二维卷积构造
+
+conv2d 2维卷积网络
+
+class torch.nn.Conv2d(in_channels, out_channels, kernel_size, stride=1, padding=0, dilation=1, groups=1, bias=True)
+
+各个参数值：
+stride：步长，卷积块的滑动步长
+
+zero-padding:图像四周填0
+
+groups:分组卷积
+
+Convolution 层的参数中有一个group参数，其意思是将对应的输入通道与输出通道数进行分组, 默认值为1, 也就是说默认输出输入的所有通道各为一组。 比如输入数据大小为90x100x100x32，通道数32，要经过一个3x3x48的卷积，group默认是1，就是全连接的卷积层。
+
+如果group是2，那么对应要将输入的32个通道分成2个16的通道，将输出的48个通道分成2个24的通道。对输出的2个24的通道，第一个24通道与输入的第一个16通道进行全卷积，第二个24通道与输入的第二个16通道进行全卷积。
+
+极端情况下，输入输出通道数相同，比如为24，group大小也为24，那么每个输出卷积核，只与输入的对应的通道进行卷积。
+
+bias:卷积后是否加偏移量
+
+dilation:控制 kernel 点之间的空间距离
+
+![conv2d_dilation](D:\git_rep\hexo\source\_posts\pytorch_learn\conv2d_dilation.png)
+
+![conv2d_dilation2](D:\git_rep\hexo\source\_posts\pytorch_learn\conv2d_dilation2.png)
+
+看下面灰色
+
+# 9，pytorch模块函数
+
+## 	9.1 nn module；(torch.nn)
+
+### 		9.1.1 初始化参数：(torch.nn.init)
+
+#### 				1，卷积层
+
+##### 					**高斯初始化**
+
+​					从均值为0，方差为1的高斯分布中采样，作为初始权值。torch.nn.init.normal_(tensor, mean=0, std=1)
+
+##### 					**kaiming高斯初始化**
+
+​					使得每一卷积层的输出的方差都为1。
+
+​					torch.nn.init.kaiming_normal_(tensor, a=0, mode='fan_in', nonlinearity='leaky_relu')
+
+##### 					**xavier高斯初始化**
+
+​					输入输出的方差不变
+
+​					基于线性函数推导的，同时在tanh激活函数上有很好的效果，**但不适用于ReLU激活函数**。
+
+#### 				2，BatchNorm层
+
+#### 				3，全连接层
+
+##### 					常数初始化
+
+​						torch.nn.init.constant_(*tensor*, *val*)
+
+##### 					正交初始化
+
+​						torch.nn.init.orthogonal_(*tensor*, *gain=1*)
+
+​					
+
+
+
+​					
+
+### 			
+
+
+
+​	
