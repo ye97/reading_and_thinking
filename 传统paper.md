@@ -100,13 +100,27 @@ w表示权重：
 
 ## 1,目标函数
 
-$\min _{\xi, \mathbf{R}, \vec{t}}\left(\frac{1}{\left|P_{\xi}\right| \xi^{1+\lambda}} \sum_{\vec{p}_{a} \in P_{\xi}}\left\|\mathbf{R} \vec{p}_{a}+\vec{t}-\vec{q}_{c(a)}\right\|_{2}^{2}\right)$s.t. $\quad \mathbf{R}^{T} \mathbf{R}=\mathbf{I}_{3}, \quad \operatorname{det}(\mathbf{R})=1$$\quad \xi \in\left[\xi_{\min }, 1\right], P_{\xi} \subseteq P, \quad\left|P_{\xi}\right|=\xi|P|$
+$\min _{\xi, \mathbf{R}, \vec{t}}\left(\frac{1}{\left|P_{\xi}\right| \xi^{1+\lambda}} \sum_{\vec{p}_{a} \in P_{\xi}}\left\|\mathbf{R} \vec{p}_{a}+\vec{t}-\vec{q}_{c(a)}\right\|_{2}^{2}\right)$  s.t. $\quad \mathbf{R}^{T} \mathbf{R}=\mathbf{I}_{3}, \quad \operatorname{det}(\mathbf{R})=1$$\quad \xi \in\left[\xi_{\min }, 1\right], P_{\xi} \subseteq P, \quad\left|P_{\xi}\right|=\xi|P|$
 
 $P_{\xi}$表示配准子集
 
 ## 2，算法步骤
 
-$$ c_{k}(a)=\underset{b \in\left\{1,2, . ., N_{q}\right\}}{\arg \min }\left\|\mathbf{R}_{k-1} \vec{p}_{a}+\vec{t}_{k-1}-\vec{q}_{b}\right\|_{2} $$
+$ c_{k}(a)= \underset{b \in\left\{1,2, . ., N_{q}\right\}}{\arg \min }\left\|\mathbf{R}_{k-1} \vec{p}_{a}+\vec{t}_{k-1}-\vec{q}_{b}\right\|_{2} $
+
+# 3,LRS
+
+# 4,AA-ICP
+
+## 	1 ，AA基本变种
+
+![Aderson accelerate variant](/Aderson accelerate variant.png)
+
+## 		2,AA-ICP
+
+​											<img src="/AA-ICP.png" alt="AA-ICP" style="zoom:100%;" />		
+
+​		
 
 # the end：代码学习总结
 
@@ -114,7 +128,7 @@ $$ c_{k}(a)=\underset{b \in\left\{1,2, . ., N_{q}\right\}}{\arg \min }\left\|\ma
 
 ### 	1.1先通过matlab查看数据结构
 
-![维度](D:\git_rep\hexo\source\_posts\传统paper\维度.png)
+![维度](维度.png)
 
 ### 1.2在python中加载数据
 
@@ -168,5 +182,5 @@ shape 原点云，就是模型的形状
 
 p 变换矩阵，4 乘4，下面是0001，上面是RT
 
-
+# 
 
