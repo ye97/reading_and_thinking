@@ -17,40 +17,28 @@ typora-root-url: 传统paper
 
 ## 1,目标函数
 
-​										$$ \begin{array}{c}
+​										$ \begin{array}{c}
 \underset{\left\{R_{i}, \boldsymbol{t}_{i}\right\}_{i=2}^{N}, \boldsymbol{q}_{c(i j)} \in Q_{i}}{\arg \min } \sum_{i=2}^{N} \sum_{j=1}^{M_{i}}\left(w_{i j} \| R_{i} \boldsymbol{p}_{i j}+\right. 
-\left.\boldsymbol{t}_{i}-\boldsymbol{q}_{c(i j)} \|_{2}^{2}\right) \end{array}$$
-
-
-
+\left.\boldsymbol{t}_{i}-\boldsymbol{q}_{c(i j)} \|_{2}^{2}\right) \end{array}$
 
 注释：P表示初始点云model
-$$
-\begin{array}
- P =\left\{R_{i}^{0} \boldsymbol{p}_{i j}+\boldsymbol{t}_{i}^{0}\right\}_{i=1, j=1}^{N, M_{j}}
 
-\end{array}
-$$
+​												$ p\begin{array}P =\left\{R_{i}^{0} \boldsymbol{p}_{i j}+\boldsymbol{t}_{i}^{0}\right\}_{i=1, j=1}^{N, M_{j}}\end{array} $
+
 以及不完整模型Q:A\B表示在集合A而不在集合B中的元素，就是说删除第i帧点云
-$$
-Q_{i}=P \backslash\left\{R_{i}^{0} \boldsymbol{p}_{i j}+\boldsymbol{t}_{i}^{0}\right\}_{j=1}^{M_{i}}
-$$
+
+​																								$ Q_{i}=P \backslash\left\{R_{i}^{0} \boldsymbol{p}_{i j}+\boldsymbol{t}_{i}^{0}\right\}_{j=1}^{M_{i}} $
 
 
-qc表示点i，j形成的点对
-$$
-\begin{equation}
-qc(i,j)
+qc表示点i，j形成的点对	:	$ \begin{equation}qc(i,j)\end{equation} $
 
-\end{equation}
-$$
+
+
+
+
 w表示权重：
-$$
-\begin{equation}
-w_{i j}
 
-\end{equation}
-$$
+​																$ \begin{equation}w_{i j}\end{equation} $
 
 ## 2,算法步骤：
 
@@ -77,7 +65,7 @@ $$
 
 ## 4,单帧更新算法
 
-![逐帧算法](D:\git_rep\hexo\source\_posts\传统paper\逐帧算法.png)
+![](逐帧算法.png)
 
 ## 5，算法评估
 
@@ -93,20 +81,20 @@ $$
 
 ## 7，icp算法求解
 
-​			![定义质心](D:\git_rep\hexo\source\_posts\传统paper\定义质心.svg)
+​			![定义质心](定义质心.svg)
 
-​			![定义去质心](D:\git_rep\hexo\source\_posts\传统paper\定义去质心.svg)
+​			![定义去质心](定义去质心.svg)
 
-![](D:\git_rep\hexo\source\_posts\传统paper\icp优化函数.svg)
+![](icp优化函数.svg)
 
-​											![简化icp](D:\git_rep\hexo\source\_posts\传统paper\简化icp.svg)
+​											![简化icp](简化icp.svg)
 
-![icp证明](D:\git_rep\hexo\source\_posts\传统paper\icp证明.svg)由于质心的旋转性质，这部分为0，关于t的部分直接令他为0，R的求解需要记一下														![最终优化函数](D:\git_rep\hexo\source\_posts\传统paper\最终优化函数.svg)
+![icp证明](icp证明.svg)由于质心的旋转性质，这部分为0，关于t的部分直接令他为0，R的求解需要记一下														![最终优化函数](最终优化函数.svg)
 
 ​			1.根据两组已知的点集算出 $ W=\sum_{i=1}^{n} q_{i} q_{i}^{\prime T} $,$ 并对其做奇异值分解得到 $  $W=U \Sigma V^{T}$ 。
 
 2. 计算 $R^{*}=U V^{T}$ 。
-3. 计算 $t^{*}=p-R^{*} p^{\prime}$$
+3. 计算 $t^{*}=p-R^{*} p^{\prime}$
 
 # 2，MATRICP
 
