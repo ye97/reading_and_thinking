@@ -6,7 +6,7 @@ tags:
   - 传统
 
 date: 2021-03-13 10:16:46
-
+description: <read more ...>
 mathjax: true
 typora-root-url: 传统paper
 ---
@@ -17,20 +17,21 @@ typora-root-url: 传统paper
 
 ## 1,目标函数
 
-​										$ \begin{array}{c}
+​																	$$\begin{array}{c}
 \underset{\left\{R_{i}, \boldsymbol{t}_{i}\right\}_{i=2}^{N}, \boldsymbol{q}_{c(i j)} \in Q_{i}}{\arg \min } \sum_{i=2}^{N} \sum_{j=1}^{M_{i}}\left(w_{i j} \| R_{i} \boldsymbol{p}_{i j}+\right. 
-\left.\boldsymbol{t}_{i}-\boldsymbol{q}_{c(i j)} \|_{2}^{2}\right) \end{array}$
+\left.\boldsymbol{t}_{i}-\boldsymbol{q}_{c(i j)} \|_{2}^{2}\right) \end{array}$$
+
 
 注释：P表示初始点云model
 
-​												$ p\begin{array}P =\left\{R_{i}^{0} \boldsymbol{p}_{i j}+\boldsymbol{t}_{i}^{0}\right\}_{i=1, j=1}^{N, M_{j}}\end{array} $
+​																<center>$p\begin{array}P =\left\{R_{i}^{0} \boldsymbol{p}_{i j}+\boldsymbol{t}_{i}^{0}\right\}_{i=1, j=1}^{N, M_{j}}\end{array}$</center>
 
-以及不完整模型Q:A\B表示在集合A而不在集合B中的元素，就是说删除第i帧点云
+以及不完整模型Q:A\\B表示在集合A而不在集合B中的元素，就是说删除第i帧点云
 
-​																								$ Q_{i}=P \backslash\left\{R_{i}^{0} \boldsymbol{p}_{i j}+\boldsymbol{t}_{i}^{0}\right\}_{j=1}^{M_{i}} $
+​															<center>	$Q_{i}=P \backslash\left\{R_{i}^{0} \boldsymbol{p}_{i j}+\boldsymbol{t}_{i}^{0}\right\}_{j=1}^{M_{i}}$  </center>
 
 
-qc表示点i，j形成的点对	:	$ \begin{equation}qc(i,j)\end{equation} $
+qc表示点i，j形成的点对	:	$\begin{equation}qc(i,j)\end{equation}$
 
 
 
@@ -38,7 +39,7 @@ qc表示点i，j形成的点对	:	$ \begin{equation}qc(i,j)\end{equation} $
 
 w表示权重：
 
-​																$ \begin{equation}w_{i j}\end{equation} $
+​																$\begin{equation}w_{i j}\end{equation}$
 
 ## 2,算法步骤：
 
