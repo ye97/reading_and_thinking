@@ -140,7 +140,33 @@ $P_{\xi}$表示配准子集
 
 ## 2，算法步骤
 
+李群关系：
+
 $ c_{k}(a)= \underset{b \in\left\{1,2, . ., N_{q}\right\}}{\arg \min }\left\|\mathbf{R}_{k-1} \vec{p}_{a}+\vec{t}_{k-1}-\vec{q}_{b}\right\|_{2} $
+
+
+
+![](/v2-11bc566d92c36f9ac7bae27dee7edf8e_1440w.jpg)
+
+目标函数tricp：
+
+![](/%E5%9B%BE%E7%89%871.png)
+
+![图片2](/%E5%9B%BE%E7%89%872.png)
+
+![](/%E5%9B%BE%E7%89%873.png)
+
+![](/%E5%9B%BE%E7%89%874.png)
+
+![](/%E5%9B%BE%E7%89%875.png)
+
+权重matricp
+
+![](/%E5%9B%BE%E7%89%876.png)
+
+
+
+
 
 # 3,LRS
 
