@@ -69,3 +69,6 @@ string minWindow(string s, string t) {
 > ​				right和left更新都是最后更新
 >
 > ​		<strong style="color:red;">		所需结果只能是缩小窗口时或者下一个稳定态时取到，都是比较值</strong>
+
+## 举例：
+
