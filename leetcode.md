@@ -249,7 +249,80 @@ class Solution {
 
 ```
 
+### [至少有 K 个重复字符的最长子串](https://leetcode-cn.com/problems/longest-substring-with-at-least-k-repeating-characters/)
 
+给你一个字符串 `s` 和一个整数 `k` ，请你找出 `s` 中的最长子串， 要求该子串中的每一字符出现次数都不少于 `k` 。返回这一子串的长度。
+
+**示例 1：**
+
+```plain
+输入：s = "aaabb", k = 3
+输出：3
+解释：最长子串为 "aaa" ，其中 'a' 重复了 3 次。
+```
+
+**示例 2：**
+
+```plain
+输入：s = "ababbc", k = 2
+输出：5
+解释：最长子串为 "ababb" ，其中 'a' 重复了 2 次， 'b' 重复了 3 次。
+```
+
+**提示：**
+
+*   `1 <= s.length <= 104`
+*   `s` 仅由小写英文字母组成
+*   `1 <= k <= 105
+
+
+
+```JAVA
+class Solution {
+    public int longestSubstring(String s, int k) {
+        int ret = 0;
+        int n = s.length();
+        for (int t = 1; t <= 26; t++) {
+            //用t枚举所有可能的字符数两
+            //当t固定，对这个情况进行滑窗
+            int l = 0, r = 0;
+            int[] cnt = new int[26];
+            //cnt 是记录所有字符
+            int tot = 0;
+            //tot是窗口所有字符种数
+            int less = 0;
+            //一个计数器 less，代表当前出现次数小于 kk 的字符的数量
+            while (r < n) {
+                cnt[s.charAt(r) - 'a']++;
+                if (cnt[s.charAt(r) - 'a'] == 1) {
+                    tot++;
+                    less++;
+                }
+                if (cnt[s.charAt(r) - 'a'] == k) {
+                    less--;
+                }
+
+                while (tot > t) {
+                    cnt[s.charAt(l) - 'a']--;
+                    if (cnt[s.charAt(l) - 'a'] == k - 1) {
+                        less++;
+                    }
+                    if (cnt[s.charAt(l) - 'a'] == 0) {
+                        tot--;
+                        less--;
+                    }
+                    l++;
+                }
+                if (less == 0) {
+                    ret = Math.max(ret, r - l + 1);
+                }
+                r++;
+            }
+        }
+        return ret;
+    }
+}
+```
 
 
 
