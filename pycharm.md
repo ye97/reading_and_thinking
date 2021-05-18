@@ -5,9 +5,10 @@ categories:
 tags:
   - pycharm
 date: 2021-03-07 09:51:56
+description: <read more ...>
 ---
 
-# 1，快捷键
+# 快捷键
 
 	1. alt enter修改输入
 	2. shift enter换行
@@ -17,4 +18,4 @@ date: 2021-03-07 09:51:56
 		p表示参量
 		v表示函数
 		c表示类
-	
+

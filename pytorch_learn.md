@@ -9,15 +9,15 @@ tags:
   - 总结
 date: 2021-03-01 16:03:30
 
+
+typora-root-url: pytorch_learn
 ---
-
-
 
 [toc]
 
-# 1,scikit-learn 框架
+# scikit-learn 框架
 
-# 2, 线性回归
+# 线性回归
 
 ``` python
 #markdown添加代码 三个~键即可
@@ -59,23 +59,19 @@ plt.xlabel('w')
 plt.show()  
 ```
 
-# 3,matplotlib绘图
+# matplotlib绘图
 
 ~~~python 
 #numpy.meshgrid()——生成网格点坐标矩阵。
 ~~~
 
-![点集](D:\git_rep\hexo\source\_posts\pytorch_learn\20180809112934345.png)
+![点集](/20180809112934345.png)
 
 A,B,C,D,E,F是6个网格点，坐标如图，**坐标矩阵**得到为：
 
 x=[[0,1,2],	y=[[0,0,0],
 
 ​	[0,1,2]] 		 [1,1,1]]
-
-{% asset_img 反向传播理解.png 反向传播 %}
-
-{%asset_img 反向传播理解.png 图片描述%}
 
 横坐标矩阵X中的每个元素，与纵坐标矩阵Y 中对应位置元素，共同构成一个点的完整坐标。如B点坐标( X12 , Y12) = (1,1) 
 
@@ -97,23 +93,25 @@ plt.grid(True)
 plt.show()
 ~~~
 
-![meshgrid](D:\git_rep\hexo\source\_posts\pytorch_learn\meshgrid.png)zh
 
-# 4,反向传播理解
 
-![反向传播理解](D:\git_rep\hexo\source\_posts\pytorch_learn\反向传播理解.png)
+![meshgrid](meshgrid.png)
+
+# 反向传播理解
+
+![反向传播理解](反向传播理解.png)
 
 画出传播图来求导，注意loss函数作为一个整体还可以化简，添加一个r
 
-# 5,pytorch基础
+# pytorch基础
 
-## 5.1基本单位-Tensor
+## 基本单位-Tensor
 
-### 5.1.1 tensor和Tensor区别
+### tensor和Tensor区别
 
 ​    Ternsor可以理解为一种数据结构，这种数据结构中包括data和grad是数据和梯度。此处注意一个小问题，**Tensor和tensor的区别**。torch.Tensor()是python类，初始化tensor类变量的。tensor是一个函数，可以将其他类型变量转换为Tensor类变量。
 
-5.1.2  tensor常见知识，type和grad属性
+###   tensor常见知识，type和grad属性
 
 ~~~python	
 import torch
@@ -137,7 +135,7 @@ None
 
 ~~~
 
-5.1.2 使用pytorch实现线性回归
+###  使用pytorch实现线性回归
 
 ~~~ python
 import torch
@@ -173,7 +171,7 @@ for epoch in range(100):
 print("predict (after training)", 4, forward(4).item())
 ~~~
 
-## 5.2 pytorch实现简单y=wx求取权重，第二部分为wx+b
+##  pytorch实现简单y=wx求取权重，第二部分为wx+b
 
 ~~~python
 import torch
@@ -240,45 +238,45 @@ print(b.item())
 
 ~~~
 
-## 5.3 pytorch实现复杂网络基本结构
+##  pytorch实现复杂网络基本结构
 
-#### 		1.  prepare dataset
+###  prepare dataset
 
-##### 						1,明确样本维度和标签维度
+> 明确样本维度和标签维度
+>
+> 要求取量的维度设置（w和b为例）
+>
+> 样本矩阵应该写成 个数*特征
+>
+> 要求导的参数应该反推得到
+>
+> design model （inhert from module）
+>
+> 唯一目标就是求到输出值
 
-##### 						2，要求取量的维度设置（w和b为例）
+### construct loss and opitimize
 
-##### 						3，样本矩阵应该写成 个数*特征
+> 计算loss是为了进行反向传播，
+>
+> optimizer是为了更新梯度
 
-##### 						4，要求导的参数应该反推得到
+### train cycle
 
-#### 		2. design model （inhert from module）
+### forwad
 
-##### 						1，唯一目标就是求到输出值
+### backward
 
-#### 		3.construct loss and opitimize
+### update
 
-##### 						1，计算loss是为了进行反向传播，
+## 调用pytorch实现线性回归
 
-##### 						2，optimizer是为了更新梯度
+### 		 model构造
 
-#### 		4.train cycle
+> 继承module 
+>
+> 必须实现init函数，调用父类的初始化函数 __init__ 函数（super语句），返回自己的构造类 torch.nn.Linear(1, 1)，这个构造类都是callable，linear是call函数 ，可以直接被调用
 
-##### 						1.forwad
-
-##### 						2.backward
-
-##### 						3.update
-
-## 5.4调用pytorch实现线性回归
-
-### 		5.4.1 model构造
-
-#### 		1，继承module 
-
-#### 		2，必须实现init函数，调用父类的初始化函数 __init__ 函数（super语句），返回自己的构造类 torch.nn.Linear(1, 1)，这个构造类都是callable，linear是call函数 ，可以直接被调用
-
-#### 		3，必须实现自己的forward计算图
+### 必须实现自己的forward计算图
 
 ~~~python 
 class LinearModel(torch.nn.Module):
@@ -300,7 +298,7 @@ class LinearModel(torch.nn.Module):
         return y_pred
 ~~~
 
-### 5.4.2 构造损失函数和优化函数
+### 构造损失函数和优化函数
 
 ~~~python
 # construct loss and optimizer
@@ -314,17 +312,17 @@ criterion = torch.nn.MSELoss(reduction='sum')
 optimizer = torch.optim.SGD(model.parameters(), lr=0.01)  # model.parameters()自动完成参数的初始化操作
 ~~~
 
-### 5.4.3模型求取
+### 模型求取
 
-#### 1，模型调用求取得到y_pre
+### 模型调用求取得到y_pre
 
-#### 2,   求取loss值
+### 求取loss值
 
-#### 3.1 反向传播前清零梯度
+### 反向传播前清零梯度
 
-#### 3， 反向传播
+###  反向传播
 
-#### 3.1.2反向传播后更新参数
+### 反向传播后更新参数
 
 ~~~ python
 #完整代码
@@ -376,7 +374,7 @@ print(model.linear.weight.item())
 print(model.linear.bias.item())
 ~~~
 
-# 6，数据集处理
+# 数据集处理
 
 1，概念 epoch：一次所有数据集被处理，包括前向和反向
 
@@ -384,7 +382,7 @@ print(model.linear.bias.item())
 
 3，iteration ：迭代次数，总样本除以batch_size
 
-## 6.1 dataset类重写
+## dataset类重写
 
 ​			dataset类是pytorch里面的抽象类提供给我们构造自己的数据集
 
@@ -401,87 +399,92 @@ transform = transforms.Compose
 	])  # 归一化,均值和方差
 ```
 
-### 			1.1____init____实现
+### 			____init____实现
 
-### 			1.2 getitem
+### 			 getitem
 
-### 			1.3 len函数
+### 			 len函数
 
 
 
-## 6.2 dataloader类，pytorch已经提供了
+##  dataloader类，pytorch已经提供了
 
 ​				DataLoader对数据集先打乱(shuffle)，然后划分成mini_batch。
 
-### 			1.1 dataset名
-
-### 			1.2 datasize
-
-### 			1.3 shuffle
-
-### 			1.4 num works（线程数）
+---
 
 
 
-## 6.3 维度变换
+> dataset名
+>
+> datasize
+>
+> shuffle
+>
+> num works（线程数）
 
-a.view()和.reshape() 丢失维度信息，直接变换维所输入的维度
-
-squeeze(4)插入的维度就在4的位置，就是多添加一个维度
-
-
-
-## 6.4 过拟合
-
-添加正则化项
-
-添加冲量（考虑历史梯度）
-
-learing rate衰减
-
-early stop 使用测试集的准确率，最高值
-
-drop out 退出部分网络，nn.drop(0.5)退出百分之50
-
-## 6.5数据值处理
-
-torch.clamp(input ,min,max,out=None)](clamp表示夹的意思)
-
-torch.clamp()的作用把input的数据，夹逼到[min,max]之间
-
-input:输入数据
-
-min:最小数据
-
-max:最大数据
-
-如果input中的数据小于min,用min代替input中小于min的数据，
-
-如果input中的数据大于max,用max代替input中大于max的数据
+​			
 
 
 
+##  维度变换
 
+> a.view()和.reshape() 丢失维度信息，直接变换维所输入的维度
+>
+> squeeze(4)插入的维度就在4的位置，就是多添加一个维度
 
+##  过拟合
 
+> 添加正则化项
+>
+> 添加冲量（考虑历史梯度）
+>
+> learing rate衰减
+>
+> early stop 使用测试集的准确率，最高值
+>
+> drop out 退出部分网络，nn.drop(0.5)退出百分之50
 
+## 数据值处理
+
+> torch.clamp(input ,min,max,out=None)](clamp表示夹的意思)
+>
+> torch.clamp()的作用把input的数据，夹逼到[min,max]之间
+>
+> input:输入数据
+>
+> min:最小数据
+>
+> max:最大数据
+>
+> 如果input中的数据小于min,用min代替input中小于min的数据，
+>
+> 如果input中的数据大于max,用max代替input中大于max的数据
+>
 
 
 
 
-# 7，多分类
+
+
+
+
+
+# 多分类
 
 ![sofrmax](D:\git_rep\hexo\source\_posts\pytorch_learn\sofrmax.png)
 
-每个指标进行指数缩放然后除以全体和。
+> 每个指标进行指数缩放然后除以全体和。
+>
+> NLLLoss函数=log+onehot
 
-NLLLoss函数=log+onehot
+![NLLLoss](NLLLoss.png)
 
-![NLLLoss](D:\git_rep\hexo\source\_posts\pytorch_learn\NLLLoss.png)
+> <center>crossemptoryloss函数</center>
 
-crossemptoryloss函数
+<center></center>
 
-![CrossEntropyLoss](D:\git_rep\hexo\source\_posts\pytorch_learn\CrossEntropyLoss.png)
+![CrossEntropyLoss](CrossEntropyLoss.png)
 
 ```python
 import torch
@@ -578,25 +581,23 @@ if __name__ == '__main__':
         test()
 ```
 
-# 8，CNN
+# CNN
 
-## 1.1 卷积
+##  卷积
 
-![cnn](D:\git_rep\hexo\source\_posts\pytorch_learn\cnn.png)
+![cnn](cnn.png)
 
-## 1.2 卷积尺寸
+##  卷积尺寸
 
-![卷积维度](D:\git_rep\hexo\source\_posts\pytorch_learn\卷积维度.png)
+![卷积维度](卷积维度.png)
 
 输入 n表示channnel数，则输入是 （n，widthin，heightin）
-
-
 
 卷积核：m个，每个都对输入卷积，每个尺寸为 （n，width_kernal，heightin_kernal）(每一个通道都要配一个核)
 
 输出：(m,widthin-width_kernel+1,heightin-height_kernel+1) 
 
-## 1.3 二维卷积构造
+## 二维卷积构造
 
 conv2d 2维卷积网络
 
@@ -619,55 +620,50 @@ bias:卷积后是否加偏移量
 
 dilation:控制 kernel 点之间的空间距离
 
-![conv2d_dilation](D:\git_rep\hexo\source\_posts\pytorch_learn\conv2d_dilation.png)
+![conv2d_dilation](conv2d_dilation.png)
 
-![conv2d_dilation2](D:\git_rep\hexo\source\_posts\pytorch_learn\conv2d_dilation2.png)
+![conv2d_dilation2](conv2d_dilation2.png)
 
 看下面灰色
 
-# 9，pytorch模块函数
+# pytorch模块函数
 
-## 	9.1 nn module；(torch.nn)
+## nn module；(torch.nn)
 
-### 		9.1.1 初始化参数：(torch.nn.init)
+​			初始化参数：(torch.nn.init)
 
-#### 				1，卷积层
+## 卷积层
 
-##### 					**高斯初始化**
+* 高斯初始化
 
 ​					从均值为0，方差为1的高斯分布中采样，作为初始权值。torch.nn.init.normal_(tensor, mean=0, std=1)
 
-##### 					**kaiming高斯初始化**
+* kaiming高斯初始化
 
 ​					使得每一卷积层的输出的方差都为1。
 
 ​					torch.nn.init.kaiming_normal_(tensor, a=0, mode='fan_in', nonlinearity='leaky_relu')
 
-##### 					**xavier高斯初始化**
+* xavier高斯初始化
 
 ​					输入输出的方差不变
 
 ​					基于线性函数推导的，同时在tanh激活函数上有很好的效果，**但不适用于ReLU激活函数**。
 
-#### 				2，BatchNorm层
-
-#### 				3，全连接层
-
-##### 					常数初始化
-
-​						torch.nn.init.constant_(*tensor*, *val*)
-
-##### 					正交初始化
-
-​						torch.nn.init.orthogonal_(*tensor*, *gain=1*)
-
-​					
+## BatchNorm层
 
 
 
-​					
-
-### 			
+> 全连接层
+>
+> 常数初始化
+>
+> ​			torch.nn.init.constant_(*tensor*, *val*)
+>
+> 正交初始化
+>
+> ​				torch.nn.init.orthogonal_(*tensor*, *gain=1*)					
+>
 
 
 
