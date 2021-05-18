@@ -472,7 +472,7 @@ transform = transforms.Compose
 
 # 多分类
 
-![sofrmax](D:\git_rep\hexo\source\_posts\pytorch_learn\sofrmax.png)
+![sofrmax](sofrmax.png)
 
 > 每个指标进行指数缩放然后除以全体和。
 >
