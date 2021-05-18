@@ -174,7 +174,7 @@ $ c_{k}(a)= \underset{b \in\left\{1,2, . ., N_{q}\right\}}{\arg \min }\left\|\ma
 
 ## 	1 ，AA基本变种
 
-![Aderson accelerate variant](/Aderson accelerate variant.png)
+![Aderson accelerate variant](/Adersonacceleratevariant.png)
 
 ## 		2,AA-ICP
 

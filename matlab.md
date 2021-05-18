@@ -1,13 +1,7 @@
 ---
 title: matlab
 categories:
-  - java学习
-  - python学习
-  - 开发项目
-  - 论文
-  - 电脑维修
-  - 金融
-  - 乐器
+  
   - 总结
 description: <read more ...>
 mathjax: true
