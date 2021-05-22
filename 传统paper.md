@@ -11,11 +11,9 @@ mathjax: true
 typora-root-url: 传统paper
 ---
 
+# 逐步求精点云配准
 
-
-# 1，逐步求精点云配准
-
-## 1,目标函数
+## 目标函数
 
 ​																	$$\begin{array}{c}
 \underset{\left\{R_{i}, \boldsymbol{t}_{i}\right\}_{i=2}^{N}, \boldsymbol{q}_{c(i j)} \in Q_{i}}{\arg \min } \sum_{i=2}^{N} \sum_{j=1}^{M_{i}}\left(w_{i j} \| R_{i} \boldsymbol{p}_{i j}+\right. 
@@ -41,7 +39,7 @@ w表示权重：
 
 ​																$\begin{equation}w_{i j}\end{equation}$
 
-## 2,算法步骤：
+## 算法步骤：
 
 1) 根据初始值 $\left(R_{i}^{0}, \boldsymbol{t}_{i}^{0}\right)$, 构造初始模型 P.  
 
@@ -49,7 +47,7 @@ w表示权重：
 
 3) 重复执行步骤 2), 直到满足循环停止条件.当循环次数 k 超过设定阈值 K 或前后两次循环所求的刚体变换变化小于设定的阈值时, 即可停止循环, 输出多视角点云配准结果.  
 
-## 3,权重迭代最近点算法
+## 权重迭代最近点算法
 
 ​	在逐步求精的第 k 次循环过程中, Pi 与 Qi 之间的最新刚体变换关系 $\left(R_{i}^{0}, \boldsymbol{t}_{i}^{0}\right) $ 需要通过求解以下最小二乘问题后得到  
 
@@ -64,23 +62,23 @@ w表示权重：
 
 
 
-## 4,单帧更新算法
+## 单帧更新算法
 
 ![](逐帧算法.png)
 
-## 5，算法评估
+## 算法评估
 
 ​     旋转矩阵误差：$e_{R}=\frac{1}{N} \sum_{i=1}^{N}\left\|R_{i, m}-R_{i, g}\right\|_{F}$
 
 ​	平移向量误差 ：$e_{t}=\frac{1}{N} \sum_{i=1}^{N}\left\|\boldsymbol{t}_{i, m}-\boldsymbol{t}_{i, g}\right\|_{2}$
 
-## 6,参考算法
+## 参考算法
 
 ​	Low-rank and sparse matrix decomposition, LRS  
 
 ​	MA
 
-## 7，icp算法求解
+## icp算法求解
 
 ​			![定义质心](定义质心.svg)
 
@@ -97,9 +95,13 @@ w表示权重：
 2. 计算 $R^{*}=U V^{T}$ 。
 3. 计算 $t^{*}=p-R^{*} p^{\prime}$
 
+
+
+
+
 # ICP算法证明
 
-## 问题引入**
+## 问题引入
 
         代最近点（Iterative Closest Point, 下简称ICP）算法是一种点云匹配算法。
 
@@ -130,15 +132,15 @@ w表示权重：
 
 
 
-# 2，MATRICP
+# MATRICP
 
-## 1,目标函数
+## 目标函数
 
 $\min _{\xi, \mathbf{R}, \vec{t}}\left(\frac{1}{\left|P_{\xi}\right| \xi^{1+\lambda}} \sum_{\vec{p}_{a} \in P_{\xi}}\left\|\mathbf{R} \vec{p}_{a}+\vec{t}-\vec{q}_{c(a)}\right\|_{2}^{2}\right)$  s.t. $\quad \mathbf{R}^{T} \mathbf{R}=\mathbf{I}_{3}, \quad \operatorname{det}(\mathbf{R})=1$$\quad \xi \in\left[\xi_{\min }, 1\right], P_{\xi} \subseteq P, \quad\left|P_{\xi}\right|=\xi|P|$
 
 $P_{\xi}$表示配准子集
 
-## 2，算法步骤
+## 算法步骤
 
 李群关系：
 
@@ -168,15 +170,15 @@ $ c_{k}(a)= \underset{b \in\left\{1,2, . ., N_{q}\right\}}{\arg \min }\left\|\ma
 
 
 
-# 3,LRS
+# LRS
 
-# 4,AA-ICP
+# AA-ICP
 
-## 	1 ，AA基本变种
+## 	AA基本变种
 
-![Aderson accelerate variant](/Adersonacceleratevariant.png)
+![Aderson accelerate variant](Adersonacceleratevariant.png)
 
-## 		2,AA-ICP
+## 		AA-ICP
 
 ​											<img src="/AA-ICP.png" alt="AA-ICP" style="zoom:100%;" />		
 
@@ -230,15 +232,118 @@ end while
 return bestFit
 ```
 
+
+
+# 李佳元-Point Cloud Registration Based on One-Point RANSAC and Scale-Annealing Biweight Estimation
+
+通过分解问题为r，t，s参数分别求解。
+
+## RANSAC算法次数：
+
+​																							$$ 		N_{T}=\left[\frac{\log (1-p)}{\log \left(1-(1-p)^{m}\right)}\right] $$																			（3）
+
+其中p是良好子集的置信度，通常设置为0.99； m是最小子集的大小（对于7参数配准，m = 3）；
+
+## Line Vector:
+
+给定点对$\left(\boldsymbol{x}_{i}, \boldsymbol{y}_{i}\right)$ and $\left(\boldsymbol{x}_{j}, \boldsymbol{y}_{j}\right)$, 线向量$\left(\vec{x}_{i j}=x_{i}-x_{j}, \vec{y}_{i j}=y_{i}-y_{j}\right) .$ 如果 $\left(x_{i}, y_{i}\right)$ and $\left(x_{j}, y_{j}\right)$
+都是内值
+$$
+\begin{aligned}
+\vec{y}_{i j} &=s \mathbf{R}\left(x_{i}-x_{j}\right)+\left(n_{i}-n_{j}\right) \\
+&=s \mathbf{R} \vec{x}_{i j}+\vec{n}_{i j}                                          （4）													
+\end{aligned}
+$$
+$\overrightarrow{\boldsymbol{n}}_{i j}=\boldsymbol{n}_{i}-\boldsymbol{n}_{j}$ 噪声向量. 噪声边界 $\tau$, $\left\|\overrightarrow{\boldsymbol{n}}_{i j}\right\| \leq 2 \tau$. （4）式消除了t变量，只和r和s有关.
+
+对 (4) 进行二范数：
+$$
+\left\|\vec{y}_{i j}\right\|=\left\|s \mathbf{R} \vec{x}_{i j}+\vec{n}_{i j}\right\| .
+$$
+三角绝对值不等式得到：
+$$
+-\left\|\overrightarrow{\boldsymbol{n}}_{i j}\right\| \leq\left\|\overrightarrow{\boldsymbol{y}}_{i j}\right\|-\left\|s \mathbf{R} \overrightarrow{\boldsymbol{x}}_{i j}\right\| \leq\left\|\overrightarrow{\boldsymbol{n}}_{i j}\right\| （6)
+$$
+(6) i左右除以$\left\|\vec{x}_{i j}\right\|$, 得到
+$$
+\left|s_{i j}-s\right| \leq \tau_{i j}（7）
+$$
+ $s_{i j}=\left(\left\|\vec{y}_{i j}\right\|\right) /\left(\left\|\vec{x}_{i j}\right\|\right)$ 是两个向量比例 $\vec{x}_{i j}$ ， $\vec{y}_{i j}$,i和j对应点的边界： $\tau_{i j}=(2 \tau) /\left(\left\|\vec{x}_{i j}\right\|\right) .$  (7) 是缩放变量.  $s$ 是唯一未知量.$ \tau $表示误差限制值。
+
+## Scale Estimation
+
+ (7) 等价于求最大序列值, 即求取最大序列时的s：
+$$
+\begin{array}{l}
+\max _{s, l^{s} \subseteq H}\left|I^{s}\right| \\
+\text { s.t. } \frac{\left|s_{k}-s\right|}{\tau_{k}} \leq 1 \quad \forall k \in I^{s}
+\end{array}
+$$
+$k$ 代替 $i j, \mathcal{H}=$ $\{1,2, \ldots, K\}$ 是观测s的下标$\left\{s_{k}\right\}_{1}^{K}$, $\left\{\tau_{k}\right\}_{1}^{K}$, $ \tau $是误差限制, 子集 $I^{s}$ 内值数,  $\left|I^{s}\right|$ 真值数. 最优缩放s对应的真值 $\tilde{I}^{s}$. 对$s_{k}$求最小二乘值, 
+$$
+\tilde{s}=\underset{s}{\arg \min } \sum_{k \in \tilde{I}^{*}}\left(\frac{s_{k}-s}{\tau_{k}}\right)^{2} .
+$$
+实际就是一个s的二次函数
+$$
+\tilde{s}=\left(\sum_{k \in \tilde{I}^{*}} \frac{1}{\tau_{k}^{2}}\right)^{-1} \sum_{k \in \tilde{I}^{s}} \frac{s_{k}}{\tau_{k}^{2}}（10）
+$$
+$N$ 个点对，有$K=$ $(N(N-1)) /(2)$向量. 复杂度为$O\left(K^{2}\right)=O\left(N^{4}\right)$. 提出one-point RANSAC减少复杂度。
+
+![](/ransac_S求解.png)
+
+
+
+## Rotation Estimation  
+
+最小化目标函数
+
+![](/r_esmate.png)
+
+其中$ \rho $
+$$
+\rho\left(r_{k}, u\right)=\left\{\begin{array}{ll}
+\frac{u^{2}}{6}\left(1-\left(1-\frac{r_{k}^{2}}{u^{2}}\right)^{3}\right), & \left|r_{k}\right| \leq u \\
+\frac{u^{2}}{6}, & \left|r_{k}\right|>u
+\end{array}\right.
+$$
+u是规模参数，控制规模大小:
+$$
+\underset{\mathbf{R}}{\operatorname{minimize}} \sum_{\left(\bar{x}_{k}, \bar{y}_{k}\right) \in \tilde{I}^{s}} w\left(r_{k}\right)\left\|\overrightarrow{\boldsymbol{y}}_{k}-\tilde{s} \mathbf{R} \overrightarrow{\boldsymbol{x}}_{k}\right\|^{2}（13）
+$$
+$w\left(r_{k}\right)=(\partial \rho) /\left(\partial r_{k}\right) / r_{k}$ 
+$$
+w\left(r_{k}, u\right)=\left\{\begin{array}{ll}
+\left(1-\frac{r_{k}^{2}}{u^{2}}\right)^{2}, & \left|r_{k}\right| \leq u \\
+0, & \left|r_{k}\right|>u（14）
+\end{array}\right.
+$$
+函数图像见下图2：u越大对r的容忍度就越大
+
+<img src="/Point Cloud Registration Based on One-Point——权重rou.jpg" style="zoom:600%;" />
+
+
+
+算法流程：
+
+![](/t_esmate.png)
+
+## Translation Estimation  
+
+将前两步求出的r，s求出后。将配准点对投影到最开始的点集，统计频率，越高就准确率越高，取百分之70.因为r和s已经求出，所以可以这么作
+
+![](/t求解约束.png)
+
+
+
 # the end：代码学习总结
 
-## 1，数据读取问题
+## 数据读取问题
 
-### 	1.1先通过matlab查看数据结构
+### 	先通过matlab查看数据结构
 
 ![维度](维度.png)
 
-### 1.2在python中加载数据
+### 在python中加载数据
 
 ~~~python
 from scipy import io as sio
@@ -251,7 +356,7 @@ model = dataset.get('model')
 
 ~~~
 
-### 1.3寻找最近点对（注意scilearn 官方文档使用）
+### 寻找最近点对（注意scilearn 官方文档使用）
 
 ~~~python
 #sklearn包调用
@@ -290,5 +395,7 @@ shape 原点云，就是模型的形状
 
 p 变换矩阵，4 乘4，下面是0001，上面是RT
 
-# 
+
+
+
 
