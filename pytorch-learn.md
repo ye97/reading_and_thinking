@@ -1,25 +1,26 @@
 ---
-title: pytorch_learn
-categories:
-  - 编程
-  - 深度学习
-tags:
-  - pytorch
-  - 深度
-  - 总结
-date: 2021-03-01 16:03:30
-
-
-typora-root-url: pytorch_learn
+typora-root-url: pytorch-learn
 ---
 
-[toc]
 
-# scikit-learn 框架
+
+
+title: pytorch_learn
+categories:
+  - python学习
+description: <read more ...>
+mathjax: true
+permalink_defaults: 'category/:title/'
+date: 2021-05-22 20:19:12
+urlname:
+tags:
+typora-root-url: pytorch-learn
+
+
 
 # 线性回归
 
-``` python
+```python
 #markdown添加代码 三个~键即可
 #线性回归模型 
 import numpy as np
@@ -71,7 +72,7 @@ A,B,C,D,E,F是6个网格点，坐标如图，**坐标矩阵**得到为：
 
 x=[[0,1,2],	y=[[0,0,0],
 
-​	[0,1,2]] 		 [1,1,1]]
+​	 [0,1,2]] 		 [1,1,1]]
 
 横坐标矩阵X中的每个元素，与纵坐标矩阵Y 中对应位置元素，共同构成一个点的完整坐标。如B点坐标( X12 , Y12) = (1,1) 
 
@@ -95,15 +96,58 @@ plt.show()
 
 
 
-![meshgrid](meshgrid.png)
+![meshgrid](/meshgrid.png)
 
-# 反向传播理解
+# Gradient Descent  
 
-![反向传播理解](反向传播理解.png)
+> 网络架构：
+>
+> 1，forward，直接从输入x写到返回y，
+>
+> 2，cost函数；
+>
+> 3，optimistic优化函数//此处为梯度下降函数
+>
+> 4，流程
+>
+> ​		forward
+>
+> ​		cost
+>
+> ​		optimistic
 
-画出传播图来求导，注意loss函数作为一个整体还可以化简，添加一个r
+```python
 
-# pytorch基础
+x_data = [1.0, 2.0, 3.0] 
+y_data = [2.0, 4.0, 6.0]
+w = 1.0
+def forward(x): 
+    return x * w
+
+def cost(xs, ys): 
+    cost = 0
+    for x, y in zip(xs, ys): 
+        y_pred = forward(x)
+        cost += (y_pred - y) ** 2 
+     return cost / len(xs)
+
+def gradient(xs, ys): 
+    grad = 0
+	for x, y in zip(xs, ys):
+		grad += 2 * x * (x * w - y)
+    return grad / len(xs)
+
+print('Predict (before training)', 4, forward(4)) 
+for epoch in range(100):
+	cost_val = cost(x_data, y_data) 
+    grad_val = gradient(x_data, y_data)
+    w -= 0.01 * grad_val
+	print('Epoch:', epoch, 'w=', w, 'loss=', cost_val) 
+    print('Predict (after training)', 4, forward(4))
+
+```
+
+# pytorch基础 
 
 ## 基本单位-Tensor
 
@@ -111,9 +155,7 @@ plt.show()
 
 ​    Ternsor可以理解为一种数据结构，这种数据结构中包括data和grad是数据和梯度。此处注意一个小问题，**Tensor和tensor的区别**。torch.Tensor()是python类，初始化tensor类变量的。tensor是一个函数，可以将其他类型变量转换为Tensor类变量。
 
-###   tensor常见知识，type和grad属性
-
-~~~python	
+```python
 import torch
 a = torch.Tensor([1.0])
 a.requires_grad = True # 或者 a.requires_grad_()
@@ -132,12 +174,11 @@ torch.FloatTensor
 None
 <class 'NoneType'>
 */
+```
 
-~~~
+## 使用pytorch实现线性回归y=wx
 
-###  使用pytorch实现线性回归
-
-~~~ python
+```python
 import torch
 x_data = [1.0, 2.0, 3.0]
 y_data = [2.0, 4.0, 6.0]
@@ -147,9 +188,7 @@ w.requires_grad = True # 需要计算梯度
 #传播图过程需要计算w的梯度 
 #书写函数应该直接使用变量名和传播图即可
 def forward(x):
-    return x*w  # w是一个Tensor
- 
- 
+    return x*w  # w是一个Tenso，Tensor参加的运算得到也是Tensor
 def loss(x, y):
     y_pred = forward(x)
     return (y_pred - y)**2
@@ -162,18 +201,17 @@ for epoch in range(100):
         l =loss(x,y) # l是一个张量，tensor主要是在建立计算图 forward, compute the loss
         l.backward() #  backward,compute grad for Tensor whose requires_grad set to True
         print('\tgrad:', x, y, w.grad.item())
-        w.data = w.data - 0.01 * w.grad.data   # 权重更新时，需要用到标量，注意grad也是一个tensor
- 
+        w.data = w.data - 0.01 * w.grad.data #权重更新时，需要用到标量，注意grad也是一个tensor
         w.grad.data.zero_() # after update, remember set the grad to zero
  
-    print('progress:', epoch, l.item()) # 取出loss使用l.item，不要直接使用l（l是tensor会构建计算图）
+   print('progress:',epoch,l.item())# 取出loss使用l.item，不要直接使用l（l是tensor会构建计算图）
  
 print("predict (after training)", 4, forward(4).item())
-~~~
+```
 
-##  pytorch实现简单y=wx求取权重，第二部分为wx+b
+## wx+b
 
-~~~python
+```python
 import torch
 def forward(x,w):
     return w*x
@@ -204,7 +242,7 @@ for epoch in range(1,1000):
         w.grad.data.zero_()
 print(w.item())
 
-
+#pytorch实现wx+b的求导
 import  torch
 def forward(w,b,x):
     return w*x+b
@@ -216,10 +254,12 @@ from random import random
 X=[]
 Y=[]
 w=torch.Tensor([1])
+#需要w求导
 w.requires_grad=True
 
 b=torch.Tensor([1])
 b.requires_grad=True
+#准备数据
 for i in range(10):
     X.append(random()*10+1)
     Y.append(X[i] * 2 + 0.5)
@@ -227,7 +267,9 @@ for i in range(10):
 for epoch in range(10000):
     for x, y in zip(X, Y):
         l=loss(w,b,x,y)
+        #pytorch反向传播自动求解
         l.backward()
+        #求data引用
         w.data=w.data-0.001*w.grad.data
         b.data=b.data-0.001*b.grad.data
         w.grad.data.zero_()
@@ -235,50 +277,39 @@ for epoch in range(10000):
 
 print(w.item())
 print(b.item())
+```
 
-~~~
+## 复杂结构设计
 
-##  pytorch实现复杂网络基本结构
-
-###  prepare dataset
-
-> 明确样本维度和标签维度
+> prepare dataset//明确数据的维度和含义；样本矩阵应该写成   个数*特征
 >
-> 要求取量的维度设置（w和b为例）
+> Design model using Class //inherit from nn.Module  
 >
-> 样本矩阵应该写成 个数*特征
+> construct loss and optimizer  //构建优化器，也就是损失函数，都是使用api
 >
-> 要求导的参数应该反推得到
+> train cycle//循环训练，实际调用
 >
-> design model （inhert from module）
+> ​	forward//正向传播，l=loss(w,b,x,y)
 >
-> 唯一目标就是求到输出值
-
-### construct loss and opitimize
-
-> 计算loss是为了进行反向传播，
+> ​	backward//反向传播，l.backward()
 >
-> optimizer是为了更新梯度
+> ​	update//更新参数。b.grad.data.zero_()
 
-### train cycle
+复杂线性设计：
 
-### forwad
-
-### backward
-
-### update
-
-## 调用pytorch实现线性回归
-
-### 		 model构造
+### 构造model
 
 > 继承module 
 >
-> 必须实现init函数，调用父类的初始化函数 __init__ 函数（super语句），返回自己的构造类 torch.nn.Linear(1, 1)，这个构造类都是callable，linear是call函数 ，可以直接被调用
+> 必须实现 init函数，调用父类的初始化函数 __init__ 函数（super语句），返回自己的构造类 torch.nn.Linear(1, 1)，这个构造类都是callable，linear是call函数 ，可以直接被调用
+>
+> 正向传播
+>
+> 反向传播
+>
+> 更新参数
 
-### 必须实现自己的forward计算图
-
-~~~python 
+```python
 class LinearModel(torch.nn.Module):
     #nn表示neturnal network 
     #module 表示网络的包
@@ -286,45 +317,38 @@ class LinearModel(torch.nn.Module):
         #调用父辈的类函数的init函数  super（类，类实例）.父类方法（）
         super(LinearModel, self).__init__()
         # (1,1)是指输入x和输出y的特征维度，这里数据集中的x和y的特征都是1维的
-        
         # 该线性层需要学习的参数是w和b  获取w/b的方式分别是~linear.weight/linear.bias
         #torch.nn.Linear(1, 1) 构造一个对象返回给实例
+        #Linear（Size of each input sample，Size of each output sample）
         self.linear = torch.nn.Linear(1, 1)
 
     def forward(self, x):
         #实现foreward函数
         #此处linear就是一个callalbe对象，实现了__call__函数
+        #self.linear没有括号就是一个可调用对象
         y_pred = self.linear(x)
         return y_pred
-~~~
+```
+
+![](/Snipaste_2021-05-22_21-52-10.png)
+
+> linear函数参数理解；X输入为N*Feature；O输出N**feature；
 
 ### 构造损失函数和优化函数
 
-~~~python
+```python
 # construct loss and optimizer
-
 # criterion = torch.nn.MSELoss(size_average = False)
-
 #损失函数还是在网络nn模块中
 criterion = torch.nn.MSELoss(reduction='sum')
 #sgd梯度下降，在optim优化器中，（模型参数求取就是在优化器中）
 #model.parameters（）自动识别所有参数
 optimizer = torch.optim.SGD(model.parameters(), lr=0.01)  # model.parameters()自动完成参数的初始化操作
-~~~
+```
 
-### 模型求取
+### 完整代码实现线性网络
 
-### 模型调用求取得到y_pre
-
-### 求取loss值
-
-### 反向传播前清零梯度
-
-###  反向传播
-
-### 反向传播后更新参数
-
-~~~ python
+```python
 #完整代码
 import torch
 #model实现自己的类，继承module模块
@@ -357,7 +381,7 @@ x_data = torch.Tensor([[1.0], [2.0], [3.0]])
 y_data = torch.Tensor([[2.0], [4.0], [6.0]])
 
 for epoch in range(1,1000):
-    #model是一个实例，但是他是__call__，可以调用，像函数一样可以调用的实例
+    #model是一个实例，但是他是__call__，可以调用，像函数一样可以调用的实例，pytorch中将类实例的call函数实例化了forward
     y=model(x_data)
     #loss同理，调用就是调用类中的函数
     cost=loss(y,y_data)
@@ -369,197 +393,202 @@ for epoch in range(1,1000):
     #更新参数（更新参数和清理梯度，都是优化器的工作）
     optim.step()
 
-
 print(model.linear.weight.item())
 print(model.linear.bias.item())
-~~~
+```
+
+# 逻辑回归
+
+```python
+#准备数据集
+x_data = torch.Tensor([[1.0], [2.0], [3.0]])
+y_data = torch.Tensor([[0], [0], [1]])
+#                                                                                          #
+#准备类使用api
+class LogisticRegressionModel(torch.nn.Module):
+	def    init  (self):
+        super(LogisticRegressionModel, self).  init  ()
+        self.linear = torch.nn.Linear(1, 1)
+    def forward(self, x):
+       y_pred = F.sigmoid(self.linear(x))
+       return y_pred
+#类实例
+model = LogisticRegressionModel()
+
+#构造损失函数和优化器
+criterion = torch.nn.BCELoss(size_average=False)
+optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
+
+#train cycle
+for epoch in range(1000):
+	y_pred = model(x_data)
+	loss = criterion(y_pred, y_data)
+	print(epoch, loss.item())
+	optimizer.zero_grad()
+	loss.backward()
+	optimizer.step()
+
+```
+
+
+
+
 
 # 数据集处理
 
-1，概念 epoch：一次所有数据集被处理，包括前向和反向
-
-2，batch_size；一次被处理的样本数量
-
-3，iteration ：迭代次数，总样本除以batch_size
-
-## dataset类重写
-
-​			dataset类是pytorch里面的抽象类提供给我们构造自己的数据集
-
-
-
-​		**目标：实现数据的结构（正则化之类的），索引（len和getitem）**
-
-​		transform=transforms.compose(compose就是将所需的transforms的各种变换有序地组合在一起。)
-
-```
-transform = transforms.Compose
-(	[transforms.ToTensor(), 
-	transforms.Normalize((0.1307,), (0.3081,))
-	])  # 归一化,均值和方差
-```
-
-### 			____init____实现
-
-### 			 getitem
-
-### 			 len函数
-
-
-
-##  dataloader类，pytorch已经提供了
-
-​				DataLoader对数据集先打乱(shuffle)，然后划分成mini_batch。
-
----
-
-
-
-> dataset名
+> 1，概念 epoch：一次所有数据集被处理，包括前向和反向
 >
-> datasize
+> 2，batch_size；一次被处理的样本数量
 >
-> shuffle
+> 3，iteration ：迭代次数，总样本除以batch_size
 >
-> num works（线程数）
+> 主要就是dataset定义和data-loader
 
-​			
+## Dataset
 
-
-
-##  维度变换
-
-> a.view()和.reshape() 丢失维度信息，直接变换维所输入的维度
+> ​	继承from torch.utils.data import Dataset
 >
-> squeeze(4)插入的维度就在4的位置，就是多添加一个维度
-
-##  过拟合
-
-> 添加正则化项
->
-> 添加冲量（考虑历史梯度）
->
-> learing rate衰减
->
-> early stop 使用测试集的准确率，最高值
->
-> drop out 退出部分网络，nn.drop(0.5)退出百分之50
-
-## 数据值处理
-
-> torch.clamp(input ,min,max,out=None)](clamp表示夹的意思)
->
-> torch.clamp()的作用把input的数据，夹逼到[min,max]之间
->
-> input:输入数据
->
-> min:最小数据
->
-> max:最大数据
->
-> 如果input中的数据小于min,用min代替input中小于min的数据，
->
-> 如果input中的数据大于max,用max代替input中大于max的数据
->
-
-
-
-
-
-
-
-
-
-# 多分类
-
-![sofrmax](sofrmax.png)
-
-> 每个指标进行指数缩放然后除以全体和。
->
-> NLLLoss函数=log+onehot
-
-![NLLLoss](NLLLoss.png)
-
-> <center>crossemptoryloss函数</center>
-
-<center></center>
-
-![CrossEntropyLoss](CrossEntropyLoss.png)
+> ​    实现初始化，获取条目，返回长度
 
 ```python
 import torch
-from torchvision import transforms
-from torchvision import datasets
+from torch.utils.data import Dataset
 from torch.utils.data import DataLoader
-import torch.nn.functional as F
+class DiabetesDataset(Dataset):
+    def __init__(self):
+    	pass
+    def __getitem__(self, index):
+    	pass
+    def __len__(self):
+    	pass
+dataset = DiabetesDataset()
+train_loader = DataLoader(dataset=dataset,
+						  batch_size=32,
+						  shuffle=True,
+						  num_workers=2)
+```
+
+datasetloader主要作用如下图：
+
+![](/Snipaste_2021-05-22_22-02-28.png)
+
+```python
+import numpy as np
+import torch
+from torch.utils.data import Dataset, DataLoader
+class DiabetesDataset(Dataset):
+    def __init__(self, filepath):
+        xy = np.loadtxt(filepath, delimiter=',', dtype=np.float32)
+        self.len = xy.shape[0]
+        self.x_data = torch.from_numpy(xy[:, :-1])
+        self.y_data = torch.from_numpy(xy[:, [-1]])
+    def __getitem__(self, index):
+        return self.x_data[index], self.y_data[index]
+    def __len__(self):
+        return self.len
+dataset = DiabetesDataset('diabetes.csv.gz')
+train_loader = DataLoader(dataset=dataset,
+batch_size=32,
+shuffle=True,
+num_workers=2)
+class Model(torch.nn.Module):
+    def __init__(self):
+        super(Model, self).__init__()
+        self.linear1 = torch.nn.Linear(8, 6)
+        self.linear2 = torch.nn.Linear(6, 4)
+        self.linear3 = torch.nn.Linear(4, 1)
+        self.sigmoid = torch.nn.Sigmoid()
+    def forward(self, x):
+        x = self.sigmoid(self.linear1(x))
+        x = self.sigmoid(self.linear2(x))
+        x = self.sigmoid(self.linear3(x))
+        return x
+model = Model()
+criterion = torch.nn.BCELoss(size_average=True)
+optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
+for epoch in range(100):
+    for i, data in enumerate(train_loader, 0):
+        # 1. Prepare data
+        inputs, labels = data
+        # 2. Forward
+        y_pred = model(inputs)
+        loss = criterion(y_pred, labels)
+        print(epoch, i, loss.item())
+        # 3. Backward
+        optimizer.zero_grad()
+        loss.backward()
+        # 4. Update
+        optimizer.step()
+```
+
+# 多分类
+
+```python
+#mnist多分类任务one-hot,以Linear全连接的方式，进行分类
+import torch
+from torchvision import transforms#打包函数的变化
+from torchvision import datasets#
+from torch.utils.data import DataLoader
+import torch.nn.functional as F#函数模块
 import torch.optim as optim
-
-# prepare dataset
-
 batch_size = 64
-#transforms。compose（）就是一系列的操作组合
-transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))])  # 归一化,均值和方差
-#这个代码不能运行，但是dataset 操作可以参见官方帮助文档 #https://pytorch.org/docs/stable/nn.html#crossentropyloss
 
-#root参数表示下载存放位置，train参数表示train训练集中提取，download表示下载
-#dataset只是处理数据的结构
-#dataloader：shuffle and  batchsize
-train_dataset = datasets.MNIST(root='../dataset/mnist/', train=True, download=True, transform=transform)
-train_loader = DataLoader(train_dataset, shuffle=True, batch_size=batch_size)
-test_dataset = datasets.MNIST(root='../dataset/mnist/', train=False, download=True, transform=transform)
-test_loader = DataLoader(test_dataset, shuffle=False, batch_size=batch_size)
+transform=transforms.Compose([
+    transforms.ToTensor(),
+    transforms.Normalize((0.1307,),(0.3081,))#你均值和方差都只传入一个参数，就报错了.
+    # 这个函数的功能是把输入图片数据转化为给定均值和方差的高斯分布，使模型更容易收敛。图片数据是r,g,b格式，对应r,g,b三个通道数据都要转换。
+])
 
-
-# design model using class
-
+train_dataset = datasets.MNIST(root='../dataset/mnist/',
+                                train=True,
+                                download=True,
+                                transform=transform)
+train_loader = DataLoader(train_dataset,
+                            shuffle=True,
+                            batch_size=batch_size)
+test_dataset = datasets.MNIST(root='../dataset/mnist/',
+                                train=False,
+                                download=True,
+                                transform=transform)
+test_loader = DataLoader(test_dataset,
+                        shuffle=False,
+                        batch_size=batch_size)
 
 class Net(torch.nn.Module):
     def __init__(self):
-        super(Net, self).__init__()
-        self.l1 = torch.nn.Linear(784, 512)
+        super(Net,self).__init__()
+        self.l1 =torch.nn.Linear(784,512)
         self.l2 = torch.nn.Linear(512, 256)
         self.l3 = torch.nn.Linear(256, 128)
         self.l4 = torch.nn.Linear(128, 64)
         self.l5 = torch.nn.Linear(64, 10)
 
-    def forward(self, x):
-        x = x.view(-1, 784)  # -1其实就是自动获取mini_batch
+    def forward(self,x):
+        x = x.view(-1,784)
         x = F.relu(self.l1(x))
         x = F.relu(self.l2(x))
         x = F.relu(self.l3(x))
         x = F.relu(self.l4(x))
-        return self.l5(x)  # 最后一层不做激活，不进行非线性变换
-
+        return self.l5(x)
 
 model = Net()
-
-# construct loss and optimizer
 criterion = torch.nn.CrossEntropyLoss()
-optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.5)
-
-
-# training cycle forward, backward, update
-
+optimizer = optim.SGD(model.parameters(),lr=0.01,momentum=0.5)
 
 def train(epoch):
     running_loss = 0.0
-    #train_loader 按照batch_size划分批次，成为可迭代对象
-    for batch_idx, data in enumerate(train_loader, 0):
-        
-        # 获得一个批次的数据和标签
-        inputs, target = data
+    for batch_idx , data in enumerate(train_loader, 0):
+        inputs,target=data
         optimizer.zero_grad()
-        # 获得模型预测结果(64, 10)
-        outputs = model(inputs)
-        # 交叉熵代价函数outputs(64,10),target（64）
-        loss = criterion(outputs, target)
+        outputs = model(inputs)#outputs:64*10,行表示对于图片的预测，batch=64
+        loss = criterion(outputs,target)
         loss.backward()
         optimizer.step()
 
-        running_loss += loss.item()
-        if batch_idx % 300 == 299:
-            print('[%d, %5d] loss: %.3f' % (epoch + 1, batch_idx + 1, running_loss / 300))
-            running_loss = 0.0
+        running_loss+=loss.item()
+        if batch_idx %300 ==299:
+            print('[%d,%5d] loss: %.3f'%(epoch+1,batch_idx+1,running_loss/300))
+            running_loss=0.0
 
 
 def test():
@@ -569,102 +598,27 @@ def test():
         for data in test_loader:
             images, labels = data
             outputs = model(images)
-            _, predicted = torch.max(outputs.data, dim=1)  # dim = 1 列是第0个维度，行是第1个维度
-            total += labels.size(0)
-            correct += (predicted == labels).sum().item()  # 张量之间的比较运算
-    print('accuracy on test set: %d %% ' % (100 * correct / total))
+            _, predicted = torch.max(outputs.data,dim=1)
+            total+=labels.size(0)#每一批=64个，所以total迭代一次加64
+            correct +=(predicted==labels).sum().item()
+    print('Accuracy on test set:%d %%'%(100*correct/total))
 
 
-if __name__ == '__main__':
+if __name__ =="__main__":
     for epoch in range(10):
-        train(epoch)
+        train(epoch)#封装起来，若要修改主干就很方便
         test()
 ```
 
-# CNN
-
-##  卷积
-
-![cnn](cnn.png)
-
-##  卷积尺寸
-
-![卷积维度](卷积维度.png)
-
-输入 n表示channnel数，则输入是 （n，widthin，heightin）
-
-卷积核：m个，每个都对输入卷积，每个尺寸为 （n，width_kernal，heightin_kernal）(每一个通道都要配一个核)
-
-输出：(m,widthin-width_kernel+1,heightin-height_kernel+1) 
-
-## 二维卷积构造
-
-conv2d 2维卷积网络
-
-class torch.nn.Conv2d(in_channels, out_channels, kernel_size, stride=1, padding=0, dilation=1, groups=1, bias=True)
-
-各个参数值：
-stride：步长，卷积块的滑动步长
-
-zero-padding:图像四周填0
-
-groups:分组卷积
-
-Convolution 层的参数中有一个group参数，其意思是将对应的输入通道与输出通道数进行分组, 默认值为1, 也就是说默认输出输入的所有通道各为一组。 比如输入数据大小为90x100x100x32，通道数32，要经过一个3x3x48的卷积，group默认是1，就是全连接的卷积层。
-
-如果group是2，那么对应要将输入的32个通道分成2个16的通道，将输出的48个通道分成2个24的通道。对输出的2个24的通道，第一个24通道与输入的第一个16通道进行全卷积，第二个24通道与输入的第二个16通道进行全卷积。
-
-极端情况下，输入输出通道数相同，比如为24，group大小也为24，那么每个输出卷积核，只与输入的对应的通道进行卷积。
-
-bias:卷积后是否加偏移量
-
-dilation:控制 kernel 点之间的空间距离
-
-![conv2d_dilation](conv2d_dilation.png)
-
-![conv2d_dilation2](conv2d_dilation2.png)
-
-看下面灰色
-
-# pytorch模块函数
-
-## nn module；(torch.nn)
-
-​			初始化参数：(torch.nn.init)
-
-## 卷积层
-
-* 高斯初始化
-
-​					从均值为0，方差为1的高斯分布中采样，作为初始权值。torch.nn.init.normal_(tensor, mean=0, std=1)
-
-* kaiming高斯初始化
-
-​					使得每一卷积层的输出的方差都为1。
-
-​					torch.nn.init.kaiming_normal_(tensor, a=0, mode='fan_in', nonlinearity='leaky_relu')
-
-* xavier高斯初始化
-
-​					输入输出的方差不变
-
-​					基于线性函数推导的，同时在tanh激活函数上有很好的效果，**但不适用于ReLU激活函数**。
-
-## BatchNorm层
 
 
+# 各种函数
 
-> 全连接层
->
-> 常数初始化
->
-> ​			torch.nn.init.constant_(*tensor*, *val*)
->
-> 正交初始化
->
-> ​				torch.nn.init.orthogonal_(*tensor*, *gain=1*)					
->
+## softmax
 
+![](/Snipaste_2021-05-22_22-13-22.png)
 
+![Snipaste_2021-05-22_22-13-36](/Snipaste_2021-05-22_22-13-36.png)
 
-​	
+交叉熵=softmax+onthot
+
