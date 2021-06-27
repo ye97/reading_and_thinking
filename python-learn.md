@@ -284,7 +284,7 @@ os.path.isdir(path)  #判断目录是否存在？如果path是一个存在的目
 os.path.abspath(path) #返回绝对路径
  
 
-os.path.basename(path) #返回文件名
+os.path.basename(path) #返回文件名 /后面的文件名，如果以/結束，就返回空
  
 
 os.path.commonprefix(list) #返回多个路径中，所有path共有的最长的路径。

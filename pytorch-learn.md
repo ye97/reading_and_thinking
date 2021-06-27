@@ -622,3 +622,91 @@ if __name__ =="__main__":
 
 交叉熵=softmax+onthot
 
+##  numpy.random.uniform(low,high,size)，
+
+随机采样功能：从一个均匀分布[low,high)中随机采样，注意定义域是左闭右开，即包含low，不包含high.
+
+参数介绍:
+low: 采样下界，float类型，默认值为0；
+high: 采样上界，float类型，默认值为1；
+size: 输出样本数目，为int或元组(tuple)类型，例如，size=(m,n,k), 则输出m\*n\*k个样本，缺省时输出1个值。
+
+## 乘法函数
+
+元素乘法：np.multiply(a,b)
+矩阵乘法：np.dot(a,b) 或 np.matmul(a,b) 或 a.dot(b) 或直接用 a @ b !
+唯独注意：*，在 np.array 中重载为元素乘法，在 np.matrix 中重载为矩阵乘法!
+
+## 截取函数
+
+```
+np.clip(
+	a, 
+	a_min, 
+	a_max, 
+	out=None):
+a：输入矩阵；
+a_min：被限定的最小值，所有比a_min小的数都会强制变为a_min；
+a_max：被限定的最大值，所有比a_max大的数都会强制变为a_max；
+out：可以指定输出矩阵的对象，shape与a相同
+```
+
+## 随机函数（待完成）
+
+[(1条消息) numpy.random.randn()用法_u012149181的博客-CSDN博客_np.random.randn](https://blog.csdn.net/u012149181/article/details/78913167)
+
+## apply函数
+
+
+
+```python
+DataFrame.apply(func, axis=0, broadcast=False, raw=False, reduce=None, args=(), **kwds)
+1.该函数最有用的是第一个参数，这个参数是函数，相当于C/C++的函数指针。
+2.这个函数需要自己实现，函数的传入参数根据axis来定，比如axis = 1，就会把一行数据作为Series的数据
+结构传入给自己实现的函数中，我们在函数中实现对Series不同属性之间的计算，返回一个结果，则apply函数
+会自动遍历每一行DataFrame的数据，最后将所有结果组合成一个Series数据结构
+并返回。
+3.apply函数常与groupby函数一起使用，如下图所示
+
+
+data=np.arange(0,16).reshape(4,4)
+data=pd.DataFrame(data,columns=['0','1','2','3'])
+def f(x):
+    return x.max()
+print(data)
+print(data.apply(f,axis=1))
+    0   1   2   3
+0   0   1   2   3
+1   4   5   6   7
+2   8   9  10  11
+3  12  13  14  15
+0     3
+1     7
+2    11
+3    15
+dtype: int64
+
+```
+
+![在这里插入图片描述](/apply)
+
+# 各种报错
+
+## 没有cuda即没有gpu设备
+
+```python
+#一开始的位置添加下面语句
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+#后面的修改
+cuda()的地方改成.to(device)
+```
+
+# 概念问题
+
+## encoder和decoder
+
+encoder-decoder模型，又叫做编码-解码模型。这是一种应用于seq2seq问题的模型**。seq2seq表示序列对序列。
+
+所谓编码，就是将输入序列转化成一个固定长度的向量；解码，就是将之前生成的固定向量再转化成输出序列。 
+
+两个问题：一是语义向量无法完全表示整个序列的信息，还有就是先输入的内容携带的信息会被后输入的信息稀释掉，或者说，被覆盖了。输入序列越长，这个现象就越严重。
