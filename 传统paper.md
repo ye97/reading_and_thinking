@@ -64,8 +64,6 @@ w表示权重：
 
 ## 单帧更新算法
 
-![](逐帧算法.png)
-
 ## 算法评估
 
 ​     旋转矩阵误差：$e_{R}=\frac{1}{N} \sum_{i=1}^{N}\left\|R_{i, m}-R_{i, g}\right\|_{F}$
@@ -144,7 +142,7 @@ $P_{\xi}$表示配准子集
 
 李群关系：
 
-$ c_{k}(a)= \underset{b \in\left\{1,2, . ., N_{q}\right\}}{\arg \min }\left\|\mathbf{R}_{k-1} \vec{p}_{a}+\vec{t}_{k-1}-\vec{q}_{b}\right\|_{2} $
+$c_{k}(a)= \underset{b \in\left\{1,2, . ., N_{q}\right\}}{\arg \min }\left\|\mathbf{R}_{k-1} \vec{p}_{a}+\vec{t}_{k-1}-\vec{q}_{b}\right\|_{2}$
 
 
 
@@ -176,11 +174,7 @@ $ c_{k}(a)= \underset{b \in\left\{1,2, . ., N_{q}\right\}}{\arg \min }\left\|\ma
 
 ## 	AA基本变种
 
-![Aderson accelerate variant](Adersonacceleratevariant.png)
-
-## 		AA-ICP
-
-​											<img src="/AA-ICP.png" alt="AA-ICP" style="zoom:100%;" />		
+## 		AA-ICP							
 
 ​		
 
@@ -240,7 +234,7 @@ return bestFit
 
 ## RANSAC算法次数：
 
-​																							$$ 		N_{T}=\left[\frac{\log (1-p)}{\log \left(1-(1-p)^{m}\right)}\right] $$																			（3）
+​																							$N_{T}=\left[\frac{\log (1-p)}{\log \left(1-(1-p)^{m}\right)}\right]$																			（3）
 
 其中p是良好子集的置信度，通常设置为0.99； m是最小子集的大小（对于7参数配准，m = 3）；
 
@@ -340,8 +334,6 @@ $$
 ## 数据读取问题
 
 ### 	先通过matlab查看数据结构
-
-![维度](维度.png)
 
 ### 在python中加载数据
 
