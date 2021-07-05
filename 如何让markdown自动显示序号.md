@@ -31,6 +31,8 @@ typora-root-url: 如何让markdown自动显示序号
 
 新建一个名为base.user.css的文件
 
+![image-20210705224716816](/image-20210705224716816.png)
+
 ### 第三步：
 
 添加如下内容即可：  
