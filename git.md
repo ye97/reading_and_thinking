@@ -10,7 +10,7 @@ categories:
 
 
 
-# 1.新建项目
+# 新建项目
 
 git init
 
@@ -18,11 +18,11 @@ git init
 
 git clone
 
-# 2.将项目和远端连接
+# 将项目和远端连接
 
 git remote add origin main
 
-# 3.将本地修改文件添加到commit区
+# 将本地修改文件添加到commit区
 
 git add .
 
@@ -30,7 +30,7 @@ git commit -m "message"
 
 (可以使用git status来查看提交状态)
 
-# 4.推送到远端
+# 推送到远端
 
 将本地分支和远程分支连接起来
 
@@ -40,7 +40,7 @@ git branch --set-upstream-to=origin/mybranch1 mybranch1
 
 一般使用第一种即可表示同名分支之间的连接
 
-# 5.将本地推送到远程分支
+# 将本地推送到远程分支
 
 ​    5.1 doesnt match anything 表示本地分支的提交区没有东西，或者没有远程分支对应，情况一：牢记先提交后push
 
