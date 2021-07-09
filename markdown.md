@@ -1,8 +1,8 @@
 ---
 title: 如何让markdown自动显示序号
 categories:
-  - 编程工具
-  - hexo
+  - 开发
+  - markdown
 description: <read more ...>
 mathjax: true
 permalink_defaults: 'category/:title/'

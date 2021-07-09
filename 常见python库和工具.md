@@ -3,7 +3,6 @@ title: 常见python库和工具
 categories:
   - 开发
   - python
-  - 工具
 
 description: <read more ...>
 mathjax: true

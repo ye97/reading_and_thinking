@@ -1,7 +1,9 @@
 ---
 title: pycharm
 categories:
-  - 编程
+  - 编程工具
+  - pycharm
+ 
 tags:
   - pycharm
 date: 2021-03-07 09:51:56

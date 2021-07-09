@@ -1,7 +1,8 @@
 ---
-title: paper
+title: 深度paper
 categories:
   - 论文
+  - 深度
 tags:
   - 深度
   - pytorch
