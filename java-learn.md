@@ -1,7 +1,7 @@
 ---
 title: java_learn
 categories:
-  - 总结
+  - 编程经验
 description: <read more ...>
 mathjax: true
 permalink_defaults: 'category/:title/'

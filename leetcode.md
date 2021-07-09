@@ -1,7 +1,8 @@
 ---
 title: leetcode
 categories:
-  - leetcode
+  - 开发
+  - java
 description: <read more ...>
 mathjax: true
 permalink_defaults: 'category/:title/'

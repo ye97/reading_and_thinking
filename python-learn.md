@@ -1,6 +1,7 @@
 ---
 title: python_learn
 categories:
+  - 开发
   - python
 tags:
   - 笔记
