@@ -15,8 +15,7 @@ typora-root-url: 传统paper
 
 ## 目标函数
 
-​																	$$\begin{array}{c}
-\underset{\left\{R_{i}, \boldsymbol{t}_{i}\right\}_{i=2}^{N}, \boldsymbol{q}_{c(i j)} \in Q_{i}}{\arg \min } \sum_{i=2}^{N} \sum_{j=1}^{M_{i}}\left(w_{i j} \| R_{i} \boldsymbol{p}_{i j}+\right. 
+​																$$\begin{array}{c}\underset{\left\{R_{i}, \boldsymbol{t}_{i}\right\}_{i=2}^{N}, \boldsymbol{q}_{c(i j)} \in Q_{i}}{\arg \min } \sum_{i=2}^{N} \sum_{j=1}^{M_{i}}\left(w_{i j} \| R_{i} \boldsymbol{p}_{i j}+\right. 
 \left.\boldsymbol{t}_{i}-\boldsymbol{q}_{c(i j)} \|_{2}^{2}\right) \end{array}$$
 
 
