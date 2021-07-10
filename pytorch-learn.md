@@ -710,3 +710,76 @@ encoder-decoder模型，又叫做编码-解码模型。这是一种应用于seq2
 所谓编码，就是将输入序列转化成一个固定长度的向量；解码，就是将之前生成的固定向量再转化成输出序列。 
 
 两个问题：一是语义向量无法完全表示整个序列的信息，还有就是先输入的内容携带的信息会被后输入的信息稀释掉，或者说，被覆盖了。输入序列越长，这个现象就越严重。
+
+# 各种网络结构
+
+## Res2Net模块介绍
+
+> 如图所示，Res2Net网络中的主要结构的思想是将原来残差卷积中的3×3卷积层接收到的来自输入层1×1卷积后的特征图分解为四部分，第一部分不进行操作，第二部分通过一个3×3卷积层，第三部分在通过一个3×3卷积层前与第二部分卷积后的特征图相加，第四部分在通过一个3×3卷积层前与第三部分卷积后的特征图相加，最终将得到的四个部分的特征图进行拼接成与输入层输出同样层数的特征图再送到输出层做1×1卷积，具体如下图所示。
+
+![ResNet和Res2Net](/1625901456-1f50ac740b8c20ef54ad04392bf2531c.jpg)
+
+#### Pytorch代码
+
+```python
+import torch
+import torch.nn as nn
+import torch.nn.functional as function
+
+
+class Res2NetBlock(nn.Module):
+    def __init__(self, inplanes, outplanes, scales=4):
+        super(Res2NetBlock, self).__init__()
+
+        if outplanes % scales != 0:  # 输出通道数为4的倍数
+            raise ValueError('Planes must be divisible by scales')
+
+        self.scales = scales
+        # 1*1的卷积层
+        self.inconv = nn.Sequential(
+            nn.Conv2d(inplanes, 32, 1, 1, 0),
+            nn.BatchNorm2d(32)
+        )
+        # 3*3的卷积层，一共有3个卷积层和3个BN层
+        self.conv1 = nn.Sequential(
+            nn.Conv2d(8, 8, 3, 1, 1),
+            nn.BatchNorm2d(8)
+        )
+        self.conv2 = nn.Sequential(
+            nn.Conv2d(8, 8, 3, 1, 1),
+            nn.BatchNorm2d(8)
+        )
+        self.conv3 = nn.Sequential(
+            nn.Conv2d(8, 8, 3, 1, 1),
+            nn.BatchNorm2d(8)
+        )
+        # 1*1的卷积层
+        self.outconv = nn.Sequential(
+            nn.Conv2d(32, 32, 1, 1, 0),
+            nn.BatchNorm2d(32),
+            nn.ReLU(inplace=True)
+        )
+
+    def forward(self, x):
+        input = x
+        x = self.inconv(x)
+
+        # scales个部分
+        xs = torch.chunk(x, self.scales, 1)
+        ys = []
+        ys.append(xs[0])
+        ys.append(function.relu(self.conv1(xs[1])))
+        ys.append(function.relu(self.conv2(xs[2]) + ys[1]))
+        ys.append(function.relu(self.conv2(xs[3]) + ys[2]))
+        y = torch.cat(ys, 1)
+
+        y = self.outconv(y)
+        
+        output = function.relu(y + input)
+
+        return output
+```
+
+## cnn设计
+
+[cnn理解](D:\git_rep\hexo\source\_posts\cnn理解.md)

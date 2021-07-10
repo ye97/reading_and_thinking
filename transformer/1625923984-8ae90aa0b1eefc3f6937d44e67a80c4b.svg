@@ -1,0 +1,10 @@
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="2.776ex" height="2.509ex" style="font-size: 15px; vertical-align: -0.338ex;" viewBox="0 -934.9 1195.3 1080.4" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<path stroke-width="1" id="E1-MJMAINB-48" d="M400 0Q376 3 226 3Q75 3 51 0H39V62H147V624H39V686H51Q75 683 226 683Q376 683 400 686H412V624H304V388H595V624H487V686H499Q523 683 673 683Q824 683 848 686H860V624H752V62H860V0H848Q824 3 674 3Q523 3 499 0H487V62H595V326H304V62H412V0H400Z"></path>
+<path stroke-width="1" id="E1-MJMAIN-2032" d="M79 43Q73 43 52 49T30 61Q30 68 85 293T146 528Q161 560 198 560Q218 560 240 545T262 501Q262 496 260 486Q259 479 173 263T84 45T79 43Z"></path>
+</defs>
+<g stroke="currentColor" fill="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)">
+ <use xlink:href="#E1-MJMAINB-48" x="0" y="0"></use>
+ <use transform="scale(0.707)" xlink:href="#E1-MJMAIN-2032" x="1273" y="585"></use>
+</g>
+</svg>
