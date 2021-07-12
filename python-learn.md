@@ -392,9 +392,182 @@ def __init__(self):
 #首先找到test的父类（比如是类A），然后把类test的对象self转换为类A的对象，然后“被转换”的类A对象调用自己的__init__函数.
 ~~~
 
+# 匿名函数
+
+
+
+## 匿名函数
+
+匿名函数就是不需要显式的指定函数名。
+
+![](python-learn/1626096941-3fa07f400d457aa50d5e958bbef24e20.png)
+
+关键字`lambda`表示匿名函数，冒号前面的`n`表示函数参数，可以有多个参数。
+
+匿名函数有个限制，就是只能有一个表达式，不用写`return`，返回值就是该表达式的结果。
+
+用匿名函数有个好处，因为函数没有名字，不必担心函数名冲突。此外，匿名函数也是一个函数对象，也可以把匿名函数赋值给一个变量，再利用变量来调用该函数：
+
+有些函数在代码中只用一次，而且函数体比较简单，使用匿名函数可以减少代码量，看起来比较"优雅“
+
+
+
+```plain
+#这段代码
+def calc(x,y):
+    return x**y
+
+#换成匿名函数
+calc = lambda x,y:x**y
+print(calc(2,5))
+
+def calc(x,y):
+    if x > y:
+        return x*y
+    else:
+        return x / y
+    
+#三元运算换成匿名函数
+calc = lambda x,y:x * y if x > y else x / y
+print(calc(2,5))
+```
+
+
+
+## 匿名函数使用场景：
+
+主要与其他函数联合使用
+
+### **map函数**
+
+`map()`函数接收两个参数，一个是函数，一个是`Iterable`，`map`将传入的函数依次作用到序列的每个元素，并把结果作为新的`Iterator`返回
+
+遍历序列，对序列中每个元素进行函数操作，最终获取新的序列。
+
+![](python-learn/1626096941-ee93cbd1fc97ddf058d5cafec4af2d83.png)
+
+1.求列表\[1,2,3,4,5,6,7,8,9\],返回一个n\*n 的列表
+
+
+
+```plain
+#一般解决方案
+li = [1,2,3,4,5,6,7,8,9]
+for ind,val in enumerate(li):
+    li[ind] = val * val
+print(li)
+# [1, 4, 9, 16, 25, 36, 49, 64, 81]
+
+# 高级解决方案
+li = [1,2,3,4,5,6,7,8,9]
+print(list(map(lambda x:x*x,li)))
+# [1, 4, 9, 16, 25, 36, 49, 64, 81]
+```
+
+
+
+### **reduce函数**
+
+`reduce`把一个函数作用在一个序列`[x1, x2, x3, ...]`上，这个函数必须接收两个参数，`reduce`把结果继续和序列的下一个元素做累积计算，其效果就是：
+
+reduce(func,\[1,2,3\]) 等同于 func(func(1,2),3)
+
+对于序列内所有元素进行累计操作
+
+![](python-learn/1626096941-afd189526c17a8d32373b1d3ffd6918b.png)
+
+![](python-learn/1626096941-b4d7ad7bfd3f5de8a2ef5bc3d1bba26c.png)
+
+```plain
+#接受一个list并利用reduce()求积
+from functools import reduce
+li = [1,2,3,4,5,6,7,8,9]
+print(reduce(lambda x,y:x * y,li))
+# 结果=1*2*3*4*5*6*7*8*9 = 362880
+```
+
+### **filter函数**
+
+`filter()`也接收一个函数和一个序列。和`map()`不同的是，`filter()`把传入的函数依次作用于每个元素，然后根据返回值是`True`还是`False`决定保留还是丢弃该元素。
+
+对于序列中的元素进行筛选，最终获取符合条件的序列
+
+![](python-learn/1626096941-02fb535614737b6451fedee02fc2166e.png)
+
+
+
+```plain
+# 在一个list中，删掉偶数，只保留奇数
+li = [1, 2, 4, 5, 6, 9, 10, 15]
+print(list(filter(lambda x:x % 2==1,li)))  # [1, 5, 9, 15]
+
+# 回数是指从左向右读和从右向左读都是一样的数，例如12321，909。请利用filter()筛选出回数
+li = list(range(1, 200))
+print(list(filter(lambda x:int(str(x))==int(str(x)[::-1]),li)))
+[1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 22, 33, 44, 55, 66, 77, 88, 99, 101, 111, 121, 131, 141, 151, 161, 171, 181, 191]
+```
+
+
+
+### sorted函数
+
+sorted(iterable, /, \*, key=None, reverse=False)
+
+接收一个`key`函数来实现对可迭代对象进行自定义的排序
+
+可迭代对象：主要与列表，字符串，元祖，集合和字典
+
+key：接受一个函数，根据此函数返回的结果，进行排序
+
+reverse：排序方向，默认为从小到大，reverse=True为逆向
+
+
+
+```plain
+# 对列表按照绝对值进行排序
+li= [-21, -12, 5, 9, 36]
+print(sorted(li, key = lambda x:abs(x)))
+# [5, 9, -12, -21, 36]
+
+"""
+sorted()函数按照keys进行排序，并按照对应关系返回list相应的元素：
+
+keys排序结果 => [5, 9,  12,  21, 36]
+                |  |    |    |   |
+最终结果     => [5, 9, -12, -21, 36]
+"""
+```
+
+
+
+```plain
+# 把下面单词以首字母排序
+li = ['bad', 'about', 'Zoo', 'Credit']
+print(sorted(li, key = lambda x : x[0]))
+# 输出['Credit', 'Zoo', 'about', 'bad']
+"""
+对字符串排序，是按照ASCII的大小比较的，由于'Z' < 'a'，结果，大写字母Z会排在小写字母a的前面。
+"""
+
+# 假设我们用一组tuple表示学生名字和成绩：
+
+L = [('Bob', 75), ('Adam', 92), ('Bart', 66), ('Lisa', 88)]
+# 请用sorted()对上述列表分别按名字排序
+print(sorted(L, key = lambda x : x[0]))
+# 输出[('Adam', 92), ('Bart', 66), ('Bob', 75), ('Lisa', 88)]
+
+# 再按成绩从高到低排序
+print(sorted(L, key = lambda x : x[1], reverse=True))
+# 输出[('Adam', 92), ('Lisa', 88), ('Bob', 75), ('Bart', 66)]
+```
+
+
+
 # 魔法函数
 
 ​	**魔法函数是在类中以双下划线开头，双下划线结尾的，python本身给我们定义了许多这种方法，让我们能在类中直接使用。**
+
+## __init__和getitem
 
 ​	魔法函数就是函数操作的重定义，比如getitem，当python执行键对操作时就执行这个函数
 
@@ -429,6 +602,12 @@ for em in company:
 
 ~~~
 
+## __dict__
+
+　![preview](python-learn/v2-105cb597a702c3d7abfbe232f4abf75c_r.jpg)
+
+
+
 # 内置函数
 
 ~~~python
@@ -438,6 +617,82 @@ for em in company:
 >>> list(enumerate(seasons, start=1))       # 下标从 1 开始
 [(1, 'Spring'), (2, 'Summer'), (3, 'Fall'), (4, 'Winter')]
 ~~~
+
+# 装饰器
+
+## python @property的介绍与使用
+
+python的@property是python的一种装饰器，是用来修饰方法的。
+
+作用：
+
+我们可以使用@property装饰器来创建**只读属性**，@property装饰器会将**方法**转换为相同名称的**只读属性**,可以与所定义的属性配合使用，这样可以防止属性被修改。
+
+使用场景：
+
+1.修饰方法，是方法可以像属性一样访问。
+
+```python
+class DataSet(object):
+  @property
+  def method_with_property(self): ##含有@property
+      return 15
+  def method_without_property(self): ##不含@property
+      return 15
+
+l = DataSet()
+print(l.method_with_property) # 加了@property后，可以用调用属性的形式来调用方法,后面不需要加（）。
+print(l.method_without_property())  #没有加@property , 必须使用正常的调用方法的形式，即在后面加()
+```
+
+两个都输出为15。
+
+```python
+class DataSet(object):
+  @property
+  def method_with_property(self): ##含有@property
+      return 15
+l = DataSet()
+print(l.method_with_property（）) # 加了@property后，可以用调用属性的形式来调用方法,后面不需要加（）。
+```
+
+如果使用property进行修饰后，又在调用的时候，方法后面添加了()， 那么就会显示错误信息：TypeError: 'int' object is not callable，也就是说添加@property 后，这个方法就变成了一个属性，如果后面加入了()，那么就是当作函数来调用，而它却不是callable（可调用）的。
+
+```python
+class DataSet(object):
+  def method_without_property(self): ##不含@property
+      return 15
+l = DataSet()
+print(l.method_without_property） #没有加@property , 必须使用正常的调用方法的形式，即在后面加()
+```
+
+没有使用property修饰，它是一种方法，如果把括号去掉，不会报错输出的就会是方法存放的地址。
+
+2.与所定义的属性配合使用，这样可以防止属性被修改。
+
+ 由于python进行属性的定义时，没办法设置私有属性，因此要通过@property的方法来进行设置。这样可以隐藏属性名，让用户进行使用的时候无法随意修改。
+
+```python
+class DataSet(object):
+    def __init__(self):
+        self._images = 1
+        self._labels = 2 #定义属性的名称
+    @property
+    def images(self): #方法加入@property后，这个方法相当于一个属性，这个属性可以让用户进行使用，而且用户有没办法随意修改。
+        return self._images 
+    @property
+    def labels(self):
+        return self._labels
+l = DataSet()
+#用户进行属性调用的时候，直接调用images即可，而不用知道属性名_images，因此用户无法更改属性，从而保护了类的属性。
+print(l.images) # 加了@property后，可以用调用属性的形式来调用方法,后面不需要加（）。
+```
+
+## @staticmethod
+
+将方法设置为类的静态方法。
+
+
 
 # numpy库
 
@@ -744,6 +999,101 @@ np.random.seed(1676)np.random.rand(5)
 ```plain
 array([ 0.39983389,  0.29426895,  0.89541728,  0.71807369,  0.3531823 ])    
 ```
+
+## numpy实现范数
+
+```python
+import numpy as np
+
+x = np.array([
+    [0, 3, 4],
+    [1, 6, 4]])
+y=np.array([
+    [[1,2],[2,2],[3,2]],
+    [[1,2],[2,2],[3,2]],
+])
+
+```
+
+
+```python
+print("默认参数(矩阵整体元素平方和开根号，不保留矩阵二维特性)：", np.linalg.norm(x))
+print("矩阵整体元素平方和开根号，保留矩阵二维特性：", np.linalg.norm(x, keepdims=True))
+```
+
+    默认参数(矩阵整体元素平方和开根号，不保留矩阵二维特性)： 8.831760866327848
+    矩阵整体元素平方和开根号，保留矩阵二维特性： [[8.83176087]]
+
+
+1. 求向量的范数
+2. 求矩阵的范数
+
+
+
+```python
+print("矩阵每个行向量求向量的2范数：", np.linalg.norm(x, axis=1, keepdims=True))
+print("矩阵每个列向量求向量的2范数：", np.linalg.norm(x, axis=0, keepdims=True))
+
+```
+
+    矩阵每个行向量求向量的2范数： [[5.        ]
+     [7.28010989]]
+    矩阵每个列向量求向量的2范数： [[1.         6.70820393 5.65685425]]
+
+
+
+```python
+print("矩阵1范数：", np.linalg.norm(x, ord=1, keepdims=True))
+print("矩阵2范数：", np.linalg.norm(x, ord=2, keepdims=True))
+print("矩阵∞范数：", np.linalg.norm(x, ord=np.inf, keepdims=True))
+```
+
+    矩阵1范数： [[9.]]
+    矩阵2范数： [[8.70457079]]
+    矩阵∞范数： [[11.]]
+
+![img](python-learn/20180115105515186)
+
+**矩阵的范数：**
+
+ord=1：列和的最大值
+
+ord=2：|λE-ATA|=0，求特征值，然后求最大特征值得算术平方根([matlab在线版](https://octave-online.net/)，计算ans=ATA，\[x,y\]=eig(ans)，sqrt(y)，x是特征向量，y是特征值)
+
+ord=∞：行和的最大值
+
+ord=None：默认情况下，是求整体的矩阵元素平方和，再开根号。（没仔细看，以为默认情况下就是矩阵的二范数，修正一下，默认情况下是求整个矩阵元素平方和再开根号）
+
+③axis：处理类型
+
+axis=1表示按行向量处理，求多个行向量的范数
+
+axis=0表示按列向量处理，求多个列向量的范数
+
+axis=None表示矩阵范数。
+
+④keepding：是否保持矩阵的二维特性
+
+True表示保持矩阵的二维特性，False相反
+
+```python
+print("矩阵每个行向量求向量的1范数：", np.linalg.norm(x, ord=1, axis=1, keepdims=True))
+print(x.shape)
+print(y.shape)
+print(np.linalg.norm(y,axis=0,keepdims=True))
+print(np.linalg.norm(y,axis=0,keepdims=True).shape)
+```
+
+    矩阵每个行向量求向量的1范数： [[ 7.]
+     [11.]]
+    (2, 3)
+    (2, 3, 2)
+    [[[1.41421356 2.82842712]
+      [2.82842712 2.82842712]
+      [4.24264069 2.82842712]]]
+    (1, 3, 2)
+
+这个地方维度参数选择，axis=0，表示第一维度消去
 
 # gparse库
 
